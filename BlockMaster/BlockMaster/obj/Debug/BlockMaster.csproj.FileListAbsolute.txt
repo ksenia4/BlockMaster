@@ -1,1 +1,14 @@
 c:\users\ksu\documents\visual studio 2012\Projects\BlockMaster\BlockMaster\bin\Debug\BlockMaster.exe.config
+C:\Users\Ksu\Documents\GitHub\BlockMaster\BlockMaster\BlockMaster\bin\Debug\BlockMaster.exe.config
+C:\Users\Ksu\Documents\GitHub\BlockMaster\BlockMaster\BlockMaster\bin\Debug\BlockMaster.exe
+C:\Users\Ksu\Documents\GitHub\BlockMaster\BlockMaster\BlockMaster\bin\Debug\BlockMaster.pdb
+C:\Users\Ksu\Documents\GitHub\BlockMaster\BlockMaster\BlockMaster\obj\Debug\BlockMaster.csprojResolveAssemblyReference.cache
+C:\Users\Ksu\Documents\GitHub\BlockMaster\BlockMaster\BlockMaster\obj\Debug\MainWindow.baml
+C:\Users\Ksu\Documents\GitHub\BlockMaster\BlockMaster\BlockMaster\obj\Debug\MainWindow.g.cs
+C:\Users\Ksu\Documents\GitHub\BlockMaster\BlockMaster\BlockMaster\obj\Debug\App.g.cs
+C:\Users\Ksu\Documents\GitHub\BlockMaster\BlockMaster\BlockMaster\obj\Debug\BlockMaster_MarkupCompile.cache
+C:\Users\Ksu\Documents\GitHub\BlockMaster\BlockMaster\BlockMaster\obj\Debug\BlockMaster.g.resources
+C:\Users\Ksu\Documents\GitHub\BlockMaster\BlockMaster\BlockMaster\obj\Debug\BlockMaster.Properties.Resources.resources
+C:\Users\Ksu\Documents\GitHub\BlockMaster\BlockMaster\BlockMaster\obj\Debug\BlockMaster.csproj.GenerateResource.Cache
+C:\Users\Ksu\Documents\GitHub\BlockMaster\BlockMaster\BlockMaster\obj\Debug\BlockMaster.exe
+C:\Users\Ksu\Documents\GitHub\BlockMaster\BlockMaster\BlockMaster\obj\Debug\BlockMaster.pdb
