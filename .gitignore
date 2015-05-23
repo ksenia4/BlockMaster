@@ -1,0 +1,7 @@
+*.cache
+*.exe
+BlockMaster/BlockMaster/bin/Debug/BlockMaster.pdb
+*.cache
+BlockMaster/BlockMaster/obj/Debug/BlockMaster.exe
+BlockMaster/BlockMaster.v11.suo
+BlockMaster/BlockMaster/bin/Debug/BlockMaster.pdb
