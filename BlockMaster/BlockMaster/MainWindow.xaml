@@ -6,6 +6,16 @@
         <Menu Height="28" VerticalAlignment="Top">
             <MenuItem Header="Файл"/>
         </Menu>
+        <Canvas x:Name="MainCanvas" HorizontalAlignment="Left" Height="426" Margin="119,33,0,0" VerticalAlignment="Top" Width="697" Background="White" MouseDown="MainCanvas_MouseDown" MouseLeftButtonDown="MainCanvas_MouseLeftButtonDown" MouseMove="MainCanvas_MouseMove" MouseLeftButtonUp="MainCanvas_MouseLeftButtonUp"/>
+        <Border BorderBrush="Black" BorderThickness="5
+                " HorizontalAlignment="Left" Height="426" Margin="10,33,0,0" VerticalAlignment="Top" Width="104">
+            <ToolBarPanel HorizontalAlignment="Left" Height="416" Margin="0,-1,0,0" VerticalAlignment="Top" Width="95
+                          " Background="#FFE2D1D1">
+                <Button Content="Эллипс" HorizontalAlignment="Left" VerticalAlignment="Top" Width="104" RenderTransformOrigin="0.72,0.727" Click="Button_Click_1"/>
+                <Button Content="Прямоугольник" VerticalAlignment="Top" RenderTransformOrigin="1.12,2.682" Height="24" Click="Button_Click_2"/>
+                <Button Content="Связь" HorizontalAlignment="Left" Width="95"/>
+            </ToolBarPanel>
+        </Border>
 
     </Grid>
 </Window>
