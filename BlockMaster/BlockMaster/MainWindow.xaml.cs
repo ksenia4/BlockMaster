@@ -25,6 +25,7 @@ namespace BlockMaster
         Shape CurrentShape;
         Point StartPosition;
         Point CurrentPosition;
+        Condition CurrentCondition;
 
         int ShapeType = 0;
 
