@@ -5,12 +5,7 @@
     <Grid>
         <Menu Height="28" VerticalAlignment="Top">
             <MenuItem Header="Файл"/>
-           
         </Menu>
-        <ScrollViewer HorizontalAlignment="Left" Margin="127,28,0,10" Width="778">
-            <StackPanel Height="431" VerticalAlignment="Top" Width="761"/>
-        </ScrollViewer>
-        <ToolBar HorizontalAlignment="Left" Height="425" Margin="10,33,0,0" VerticalAlignment="Top" Width="117"/>
 
     </Grid>
 </Window>
