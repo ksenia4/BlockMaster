@@ -13,8 +13,16 @@
                           " Background="#FFE2D1D1">
                 <Button Content="Эллипс" HorizontalAlignment="Left" VerticalAlignment="Top" Width="104" RenderTransformOrigin="0.72,0.727" Click="Button_Click_1"/>
                 <Button Content="Прямоугольник" VerticalAlignment="Top" RenderTransformOrigin="1.12,2.682" Height="24" Click="Button_Click_2"/>
-                <Button Content="Связь" HorizontalAlignment="Left" Width="95"/>
+                <Button Content="Связь" HorizontalAlignment="Left" Width="95" Click="Button_Click_3"/>
             </ToolBarPanel>
+        </Border>
+        <Border BorderBrush="Black" BorderThickness="3" HorizontalAlignment="Left" Height="426" Margin="821,33,0,0" VerticalAlignment="Top" Width="193" CornerRadius="5">
+            <Grid HorizontalAlignment="Left" Height="406" Margin="0,7,0,0" VerticalAlignment="Top" Width="183">
+                <Label Content="Длина:" Margin="1,80,124,300"/>
+                <TextBox Name ="WidthBox" HorizontalAlignment="Left" Height="26" Margin="64,80,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="86"/>
+                <Label Content="Высота:" HorizontalAlignment="Left" Height="31" Margin="1,125,0,0" VerticalAlignment="Top" Width="58"/>
+                <TextBox Name ="HeightBox" HorizontalAlignment="Left" Height="21" Margin="64,127,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="86"/>
+            </Grid>
         </Border>
 
     </Grid>
