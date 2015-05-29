@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace BlockMaster
 {
-    class Line
+    class Link
     {
+        public int ID;
     }
 }
