@@ -304,8 +304,10 @@ namespace BlockMaster
                 moving = false;
                 
                 //++ksu
-                ChangeSizeAndPosition();
+                ChangeSizeAndPosition(CurrentShape.Name);
                 //--ksu
+
+
                 MainCanvas.Children.Clear();
                 MainCanvas.Children.Add(SelectedBorder);
                 MainCanvas.Children.Add(StretchController);
@@ -350,7 +352,7 @@ namespace BlockMaster
                 }
 
                 //++ksu
-                ChangeSizeAndPosition();
+                ChangeSizeAndPosition(CurrentShape.Name);
                 //--ksu
             }
         }
@@ -598,20 +600,21 @@ namespace BlockMaster
         }
 
         //++ksu
-        private void ChangeSizeAndPosition()
+        private void ChangeSizeAndPosition(string ID)
         {
+            ID = ID.Substring(1);
             Condition NewCondition = new Condition(CurrentCondition);
             CurrentStateStore.AddConditionInStore(CurrentCondition);
 
             //Sticky
-            GBox CurrentGBox = NewCondition.TakeGBoxFromCondition(CurrentShape.Name.Substring(1));
+            ///GBox CurrentGBox = NewCondition.TakeGBoxFromCondition(CurrentShape.Name.Substring(1));
             //--Sticky
 
             double Top = Canvas.GetTop(CurrentShape);
             double Left = Canvas.GetLeft(CurrentShape);
             double Height = CurrentShape.Height;
             double Width = CurrentShape.Width;
-            CurrentGBox.SetPositionAndSize(Top, Left, Height, Width);
+            NewCondition.BoxIDs[ID].SetPositionAndSize(Top, Left, Height, Width);
             
             CurrentCondition = NewCondition;
         }
@@ -645,7 +648,7 @@ namespace BlockMaster
 
         public void DrawShape(GBox gBox, string ID)
         {
-            
+
                 if (gBox.Element.Type == 0)
                 {
                     CurrentShape = new Ellipse();
@@ -672,6 +675,9 @@ namespace BlockMaster
                 Canvas.SetLeft(CurrentShape, gBox.Element.Left);
                 Canvas.SetTop(CurrentShape, gBox.Element.Top);
                 CurrentShape.MouseDown += new MouseButtonEventHandler(OnShapeClick);
+
+                UnregisterName(CurrentShape.Name);
+                RegisterName(CurrentShape.Name, CurrentShape);
         }
 
         public void DrawLink(string StartID, string EndID, string Id, int TargetType)

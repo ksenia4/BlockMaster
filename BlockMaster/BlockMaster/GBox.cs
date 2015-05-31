@@ -19,7 +19,7 @@ namespace BlockMaster
         public GBox(Shape InElement)
         {
             GElement = InElement;
-
+           
             Element = new Box();
 
             Element.ID = InElement.Name;
@@ -74,12 +74,12 @@ namespace BlockMaster
             return 0;
         }
 
-        public int SetPositionAndSize(double InTop, double InLeft)
+        public int SetPositionAndSize(double InTop, double InLeft, double InHeight, double InWidth)
         {
             Element.Top = InTop;
             Element.Left = InLeft;
-            Element.Height = GElement.Height;
-            Element.Width = GElement.Width;
+            Element.Height = InHeight;
+            Element.Width = InWidth;
             return 0;
         }
     }
