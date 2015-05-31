@@ -88,6 +88,41 @@ namespace BlockMaster
             return 0;
         }
 
+        public int DeleteLineFromCondition(GLine Line)
+        {
+            LineIDs.Remove(Line.Line.ID);
+
+            for (int i = 0; i < AmountOfelements; i++)
+            {
+                for (int j = 0; j < AmountOfelements; j++)
+                {
+                    if (CondMatrix[i][j]==Line.Line.ID) CondMatrix[i][j] = "";
+                }
+            }
+
+            return 0;
+        }
+
+        public int DeleteElementFromCondition(GBox Element)
+        {
+            int IndexOfElement = IDsForMatrix[Element.Element.ID];
+               
+            for (int i = 0; i < AmountOfelements; i++)
+            {
+                CondMatrix[IndexOfElement][i] = "";
+            }
+            for (int j = 0; j < AmountOfelements; j++)
+            {
+                CondMatrix[j][IndexOfElement] = "";
+            }
+            
+            BoxIDs.Remove(Element.Element.ID);
+            
+            return 0;
+        }
+
+
+
         public GBox TakeGBoxFromCondition(string ID)
         {
             return BoxIDs[ID];

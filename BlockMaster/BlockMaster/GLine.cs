@@ -12,7 +12,7 @@ namespace BlockMaster
     {
         private Shape[] GrLine;
         private Label GComment;
-        private Link Line;
+        public Link Line;
 
         GLine()
         { }
