@@ -365,23 +365,27 @@ namespace BlockMaster
                 string CurrentName = CurrentShape.Name;
                 string TargetName = TargetShape.Name;
 
-                double tWidth = TargetShape.ActualWidth;
-                double tHeight = TargetShape.ActualHeight;
+                CurrentShape.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+                TargetShape.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+                
+
+                double tWidth = TargetShape.DesiredSize.Width;
+                double tHeight = TargetShape.DesiredSize.Height;
                 
                 if (CurrentShape.Name == "Poly")
                 {
                     CurrentShape = SelectedBorder;
                 }
                 Point targetCenter =
-                    TargetShape.TransformToAncestor(MainCanvas).Transform(new Point(TargetShape.ActualWidth / 2, TargetShape.ActualHeight / 2));
+                    TargetShape.TransformToAncestor(MainCanvas).Transform(new Point(TargetShape.DesiredSize.Width / 2, TargetShape.DesiredSize.Height / 2));
                 if (TargetShape.Name == "Poly")
                 {
                     Rectangle HitBox = new Rectangle();
                     MainCanvas.Children.Add(HitBox);
-                    double diagonal = Math.Sqrt(Math.Pow(TargetShape.ActualWidth, 2) + Math.Pow(TargetShape.ActualHeight, 2));
+                    double diagonal = Math.Sqrt(Math.Pow(TargetShape.DesiredSize.Width, 2) + Math.Pow(TargetShape.DesiredSize.Height, 2));
                    // HitBox.StrokeThickness = 10;
                     //HitBox.Stroke = Brushes.Black;
-                    Point center = TargetShape.TransformToAncestor(MainCanvas).Transform(new Point(TargetShape.ActualWidth / 2, TargetShape.ActualHeight / 2));
+                    Point center = TargetShape.TransformToAncestor(MainCanvas).Transform(new Point(TargetShape.DesiredSize.Width / 2, TargetShape.DesiredSize.Height / 2));
 
                     Canvas.SetLeft(HitBox, center.X - diagonal / 2);
                     Canvas.SetTop(HitBox, center.Y - diagonal / 2);
@@ -398,8 +402,8 @@ namespace BlockMaster
                         tHeight = diagonal;
                 }
             
-                Point currentCenter = 
-                    CurrentShape.TransformToAncestor(MainCanvas).Transform(new Point(CurrentShape.ActualWidth / 2, CurrentShape.ActualHeight / 2));
+                Point currentCenter =
+                    CurrentShape.TransformToAncestor(MainCanvas).Transform(new Point(CurrentShape.DesiredSize.Width / 2, CurrentShape.DesiredSize.Height / 2));
                 
 
                 double distance;
@@ -408,13 +412,13 @@ namespace BlockMaster
                 Point currentOptimal;
                 Point targetOptimal;
 
-                
 
-                candidate = currentCenter; candidate.Y += CurrentShape.ActualHeight / 2;
+
+                candidate = currentCenter; candidate.Y += CurrentShape.DesiredSize.Height / 2;
                 optimalDistance = GetDistanceBetweenPoints(candidate, targetCenter);
                 currentOptimal = candidate;
 
-                candidate = currentCenter; candidate.Y -= CurrentShape.ActualHeight / 2;
+                candidate = currentCenter; candidate.Y -= CurrentShape.DesiredSize.Height / 2;
                 distance = GetDistanceBetweenPoints(candidate, targetCenter);
                 if (distance < optimalDistance)
                 {
@@ -422,7 +426,7 @@ namespace BlockMaster
                     optimalDistance = distance;
                 }
 
-                candidate = currentCenter; candidate.X += CurrentShape.ActualWidth / 2;
+                candidate = currentCenter; candidate.X += CurrentShape.DesiredSize.Width / 2;
                 distance = GetDistanceBetweenPoints(candidate, targetCenter);
                 if (distance < optimalDistance)
                 {
@@ -430,7 +434,7 @@ namespace BlockMaster
                     optimalDistance = distance;
                 }
 
-                candidate = currentCenter; candidate.X -= CurrentShape.ActualWidth / 2;
+                candidate = currentCenter; candidate.X -= CurrentShape.DesiredSize.Width / 2;
                 distance = GetDistanceBetweenPoints(candidate, targetCenter);
                 if (distance < optimalDistance)
                 {
@@ -635,11 +639,11 @@ namespace BlockMaster
                 string StartID;
                 StartID = "S" + link.Value.GetLink().Start.ToString();
                 string EndID;
-                EndID = "S" + link.Value.GetLink().Start.ToString();
+                EndID = "S" + link.Value.GetLink().End.ToString();
 
                 //CurrentShape = 
 
-                //DrawLink(, LinkID);
+                DrawLink(StartID, EndID, LinkID, 0);
             }
         }
 
@@ -672,10 +676,149 @@ namespace BlockMaster
                 Canvas.SetLeft(CurrentShape, gBox.Element.Left);
                 Canvas.SetTop(CurrentShape, gBox.Element.Top);
                 CurrentShape.MouseDown += new MouseButtonEventHandler(OnShapeClick);
+                MainCanvas.UnregisterName(CurrentShape.Name);
+                
+                CurrentShape.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+                //CurrentShape.Arrange(new Rect(0, 0, CurrentShape.DesiredWidth, CurrentShape.DesiredHeight));
+            
+            RegisterName(CurrentShape.Name, CurrentShape);
         }
 
         public void DrawLink(string StartID, string EndID, string Id, int TargetType)
         {
+            CurrentShape =(Shape) MainCanvas.FindName(StartID);
+            TargetShape = (Shape)MainCanvas.FindName(EndID);
+
+            CurrentShape.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+            TargetShape.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+
+            DrawSelectedBorder(CurrentShape.Name, 0);
+
+            string CurrentName = CurrentShape.Name;
+            string TargetName = TargetShape.Name;
+
+            double tWidth = TargetShape.DesiredSize.Width;
+            double tHeight = TargetShape.DesiredSize.Height;
+
+            if (CurrentShape.Name == "Poly")
+            {
+                CurrentShape = SelectedBorder;
+            }
+            Point targetCenter =
+                TargetShape.TransformToAncestor(MainCanvas).Transform(new Point(TargetShape.DesiredSize.Width / 2, TargetShape.DesiredSize.Height / 2));
+            if (TargetShape.Name == "Poly")
+            {
+                Rectangle HitBox = new Rectangle();
+                MainCanvas.Children.Add(HitBox);
+                double diagonal = Math.Sqrt(Math.Pow(TargetShape.DesiredSize.Width, 2) + Math.Pow(TargetShape.DesiredSize.Height, 2));
+                // HitBox.StrokeThickness = 10;
+                //HitBox.Stroke = Brushes.Black;
+                Point center = TargetShape.TransformToAncestor(MainCanvas).Transform(new Point(TargetShape.DesiredSize.Width / 2, TargetShape.DesiredSize.Height / 2));
+
+                Canvas.SetLeft(HitBox, center.X - diagonal / 2);
+                Canvas.SetTop(HitBox, center.Y - diagonal / 2);
+                HitBox.Height = diagonal;
+                HitBox.Width = diagonal;
+
+                // HitBox.Visibility = Visibility.Hidden;
+                //HitBox.IsEnabled = false;
+
+                TargetShape = HitBox;
+                targetCenter.X = Canvas.GetLeft(TargetShape) + diagonal / 2;
+                targetCenter.Y = Canvas.GetTop(TargetShape) + diagonal / 2;
+                tWidth = diagonal;
+                tHeight = diagonal;
+            }
+
+            Point currentCenter =
+                CurrentShape.TransformToAncestor(MainCanvas).Transform(new Point(CurrentShape.DesiredSize.Width / 2, CurrentShape.DesiredSize.Height / 2));
+
+            currentCenter.X += Canvas.GetLeft(CurrentShape);
+            currentCenter.Y += Canvas.GetTop(CurrentShape);
+
+            double distance;
+            double optimalDistance;
+            Point candidate;
+            Point currentOptimal;
+            Point targetOptimal;
+
+
+
+            candidate = currentCenter; candidate.Y += CurrentShape.DesiredSize.Height / 2;
+            optimalDistance = GetDistanceBetweenPoints(candidate, targetCenter);
+            currentOptimal = candidate;
+
+            candidate = currentCenter; candidate.Y -= CurrentShape.DesiredSize.Height / 2;
+            distance = GetDistanceBetweenPoints(candidate, targetCenter);
+            if (distance < optimalDistance)
+            {
+                currentOptimal = candidate;
+                optimalDistance = distance;
+            }
+
+            candidate = currentCenter; candidate.X += CurrentShape.DesiredSize.Width / 2;
+            distance = GetDistanceBetweenPoints(candidate, targetCenter);
+            if (distance < optimalDistance)
+            {
+                currentOptimal = candidate;
+                optimalDistance = distance;
+            }
+
+            candidate = currentCenter; candidate.X -= CurrentShape.DesiredSize.Width / 2;
+            distance = GetDistanceBetweenPoints(candidate, targetCenter);
+            if (distance < optimalDistance)
+            {
+                currentOptimal = candidate;
+                optimalDistance = distance;
+            }
+
+            //now for targeted shape
+            targetCenter.X += Canvas.GetLeft(TargetShape);
+            targetCenter.Y += Canvas.GetTop(TargetShape);
+
+            candidate = targetCenter; candidate.Y += tHeight / 2;
+            optimalDistance = GetDistanceBetweenPoints(candidate, currentOptimal);
+            targetOptimal = candidate;
+
+            candidate = targetCenter; candidate.Y -= tHeight / 2;
+            distance = GetDistanceBetweenPoints(candidate, currentOptimal);
+            if (distance < optimalDistance)
+            {
+                targetOptimal = candidate;
+                optimalDistance = distance;
+            }
+
+            candidate = targetCenter; candidate.X += tWidth / 2;
+            distance = GetDistanceBetweenPoints(candidate, currentOptimal);
+            if (distance < optimalDistance)
+            {
+                targetOptimal = candidate;
+                optimalDistance = distance;
+            }
+
+            candidate = targetCenter; candidate.X -= tWidth / 2;
+            distance = GetDistanceBetweenPoints(candidate, currentOptimal);
+            if (distance < optimalDistance)
+            {
+                targetOptimal = candidate;
+                optimalDistance = distance;
+            }
+
+
+
+
+            System.Windows.Shapes.Line line = new System.Windows.Shapes.Line();
+            line.Name = Id;
+            line.Visibility = System.Windows.Visibility.Visible;
+            line.StrokeThickness = 2;
+            line.Stroke = System.Windows.Media.Brushes.Black;
+            line.X1 = currentOptimal.X;
+            line.X2 = targetOptimal.X;
+            line.Y1 = currentOptimal.Y;
+            line.Y2 = targetOptimal.Y;
+
+            MainCanvas.Children.Add(line);
+            TargetShape = null;           
 
         }
 
@@ -695,8 +838,8 @@ namespace BlockMaster
                 SelectedBorder.Width = CurrentShape.Width;
 
                 StretchController.Visibility = Visibility.Visible;
-                Canvas.SetLeft(StretchController, Canvas.GetLeft(CurrentShape) + CurrentShape.ActualWidth - 4);
-                Canvas.SetTop(StretchController, Canvas.GetTop(CurrentShape) + CurrentShape.ActualHeight - 4);
+                Canvas.SetLeft(StretchController, Canvas.GetLeft(CurrentShape) + CurrentShape.DesiredSize.Width - 4);
+                Canvas.SetTop(StretchController, Canvas.GetTop(CurrentShape) + CurrentShape.DesiredSize.Height - 4);
 
                 HeightBox.Text = CurrentShape.Height.ToString();
                 WidthBox.Text = CurrentShape.Width.ToString();

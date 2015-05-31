@@ -74,12 +74,12 @@ namespace BlockMaster
             return 0;
         }
 
-        public int SetPositionAndSize(double InTop, double InLeft)
+        public int SetPositionAndSize(double InTop, double InLeft, double Height, double Width)
         {
             Element.Top = InTop;
             Element.Left = InLeft;
-            Element.Height = GElement.Height;
-            Element.Width = GElement.Width;
+            Element.Height = /*GElement.*/Height;
+            Element.Width = /*GElement.*/Width;
             return 0;
         }
     }

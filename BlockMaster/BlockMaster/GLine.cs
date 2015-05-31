@@ -56,7 +56,7 @@ namespace BlockMaster
             return 0;
         }
 
-        public int SetPositionAndSize(double Top, double Left)
+        public int SetPositionAndSize(double Top, double Left, double Height, double Width)
         {
             return 1;
         }
