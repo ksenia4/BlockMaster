@@ -196,6 +196,8 @@ namespace BlockMaster
                 Canvas.SetLeft(StretchController, Canvas.GetLeft(StretchController) + offsetWidth);
 
                 StartPosition = CurrentPosition;
+
+
             }
             if (stretching)
             {
@@ -304,6 +306,10 @@ namespace BlockMaster
                 //++ksu
                 ChangeSizeAndPosition();
                 //--ksu
+                MainCanvas.Children.Clear();
+                MainCanvas.Children.Add(SelectedBorder);
+                MainCanvas.Children.Add(StretchController);
+                DrawCondition();
             }
             if (stretching)
             {
@@ -499,7 +505,7 @@ namespace BlockMaster
                 //Sticky
                 Condition NewCondition = new Condition(CurrentCondition);
                 GLine gLine = new GLine(CurrentName, TargetName, line.Name);
-                NewCondition.AddConnection(CurrentName, TargetName, gLine, line.Name);
+                NewCondition.AddConnection(CurrentName.Substring(1), TargetName.Substring(1), gLine, line.Name);
                 CurrentStateStore.AddConditionInStore(CurrentCondition);
                 CurrentCondition = NewCondition;
                 //--Sticky
@@ -511,15 +517,19 @@ namespace BlockMaster
                 ShapeType = 3;
             }
 
-            if (CurrentShape == (Shape)e.Source)
+            Shape S = (Shape)e.Source;
+
+            if (CurrentShape.Name == S.Name)
             {
                 moving = true;
                 StartPosition = Mouse.GetPosition(MainCanvas);
             }
             SelectedBorder.Visibility = Visibility.Visible;
+            
             //MessageBox.Show("Purr");
+            CurrentShape = (Shape)e.Source;
             DrawSelectedBorder(CurrentShape.Name, CurrentCondition.TakeGBoxFromCondition(CurrentShape.Name.Substring(1)).Element.Type);
-           /* CurrentShape = (Shape)e.Source;
+           /* 
             if (CurrentShape.Name != "Poly")
             {
                 SelectedBorder.StrokeThickness = 1;
@@ -599,7 +609,9 @@ namespace BlockMaster
 
             double Top = Canvas.GetTop(CurrentShape);
             double Left = Canvas.GetLeft(CurrentShape);
-            CurrentGBox.SetPositionAndSize(Top, Left);
+            double Height = CurrentShape.Height;
+            double Width = CurrentShape.Width;
+            CurrentGBox.SetPositionAndSize(Top, Left, Height, Width);
             
             CurrentCondition = NewCondition;
         }
@@ -659,6 +671,7 @@ namespace BlockMaster
                 MainCanvas.Children.Add(CurrentShape);
                 Canvas.SetLeft(CurrentShape, gBox.Element.Left);
                 Canvas.SetTop(CurrentShape, gBox.Element.Top);
+                CurrentShape.MouseDown += new MouseButtonEventHandler(OnShapeClick);
         }
 
         public void DrawLink(string StartID, string EndID, string Id, int TargetType)
