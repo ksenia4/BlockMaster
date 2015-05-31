@@ -23,27 +23,30 @@ namespace BlockMaster
             GComment = InComment;
         }
 
-        public int SetStartPosition(string ID, Condition CurrentCondition)
+        public int SetStartPosition()
         {
             return 1;
         }
-        public int SetEndPosition(string ID, Condition CurrentCondition)
+        public int SetEndPosition()
         {
             return 1;
         }
 
-        public int SetComment(string ID, Condition CurrentCondition, string Comment)
+        public int SetComment(string Comment)
         {
-            GLine Element = CurrentCondition.LineIDs[ID];
-            Element.Line.Comment = Comment;
+            Line.Comment = Comment;
             return 0;
         }
 
-        public int SetTitle(string ID, Condition CurrentCondition, string Title)
+        public int SetTitle(string Title)
         {
-            GLine Element = CurrentCondition.LineIDs[ID];
-            Element.Line.Title = Title;
+            Line.Title = Title;
             return 0;
+        }
+
+        public int SetPositionAndSize(double Top, double Left)
+        {
+            return 1;
         }
     }
 }

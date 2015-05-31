@@ -45,33 +45,37 @@ namespace BlockMaster
 
         }
 
-        public int SetStartPosition(string ID, Condition CurrentCondition)
+        public int SetStartPosition()
         {
-            GBox Element = CurrentCondition.BoxIDs[ID];
-            Element.Element.StartPosition = true;
+            Element.StartPosition = true;
             return 0;
         }
 
-        public int SetEndPosition(string ID, Condition CurrentCondition)
+        public int SetEndPosition()
         {
-            GBox Element = CurrentCondition.BoxIDs[ID];
-            Element.Element.EndPosition = true;
+            Element.EndPosition = true;
             return 0;
         }
 
-        public int SetComment(string ID, Condition CurrentCondition, string Comment)
+        public int SetComment(string Comment)
         {
-            GBox Element = CurrentCondition.BoxIDs[ID];
-            Element.Element.Comment = Comment;
+            Element.Comment = Comment;
             return 0;
         }
 
-        public int SetTitle(string ID, Condition CurrentCondition, string Title)
+        public int SetTitle(string Title)
         {
-            GBox Element = CurrentCondition.BoxIDs[ID];
-            Element.Element.Title = Title;
+            Element.Title = Title;
             return 0;
         }
 
+        public int SetPositionAndSize(double InTop, double InLeft)
+        {
+            Element.Top = InTop;
+            Element.Left = InLeft;
+            Element.Height = GElement.Height;
+            Element.Width = GElement.Width;
+            return 0;
+        }
     }
 }

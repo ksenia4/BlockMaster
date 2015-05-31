@@ -13,8 +13,8 @@ namespace BlockMaster
 
         Dictionary<string, int> IDsForMatrix;
 
-        string[,] CondMatrix;
-        int AmountOfelements;
+        List<List<string>> CondMatrix;
+        public int AmountOfelements;
 
         public Condition()
         {
@@ -22,7 +22,7 @@ namespace BlockMaster
             BoxIDs = new  Dictionary<string, GBox>();
             LineIDs = new Dictionary<string, GLine>();
             IDsForMatrix = new Dictionary<string, int>();
-            CondMatrix = new string[0,0];
+            CondMatrix = new  List<List<string>>(0);
         }
 
         public Condition(Condition CurrentCondition)
@@ -31,7 +31,7 @@ namespace BlockMaster
             BoxIDs = new Dictionary<string, GBox>();
             LineIDs = new Dictionary<string, GLine>();
             IDsForMatrix = new Dictionary<string, int>();
-            CondMatrix = new string[0, 0];
+            CondMatrix = new List<List<string>>(CurrentCondition.CondMatrix);
 
             foreach (KeyValuePair<string, GBox> Element in CurrentCondition.BoxIDs)
             {
@@ -48,13 +48,13 @@ namespace BlockMaster
                 IDsForMatrix.Add(Element.Key, Element.Value);
             }
 
-            for (int i = 0; i < AmountOfelements; i++)
-            {
-                for (int j = 0; j < AmountOfelements; j++)
-                {
-                   // CondMatrix[i, j] = CurrentCondition.CondMatrix[i, j];
-                }
-            }
+            //for (int i = 0; i < AmountOfelements; i++)
+            //{
+            //    for (int j = 0; j < AmountOfelements; j++)
+            //    {
+            //        CondMatrix[i][j] = CurrentCondition.CondMatrix[i][j];
+            //    }
+            //}
         }
    
         public int AddElementInCondition(GBox Element)
@@ -62,7 +62,18 @@ namespace BlockMaster
             AmountOfelements++;
             BoxIDs.Add(Element.Element.ID, Element);
             IDsForMatrix.Add(Element.Element.ID, AmountOfelements);
+            CondMatrix.Add(new List<string>(AmountOfelements));
 
+            for (int i = 0; i < AmountOfelements-1; i++)
+            {
+                CondMatrix[AmountOfelements-1].Add("");
+            }
+
+            for (int i = 0; i < AmountOfelements; i++)
+            {
+                CondMatrix[i].Add("");
+            }
+            
             return 0;
         }
 
@@ -72,7 +83,7 @@ namespace BlockMaster
             int SecondIndex = IDsForMatrix[ID2];
 
             LineIDs.Add(LineID, GlineEl);
-            CondMatrix[FirstIndex, SecondIndex] = LineID;
+            CondMatrix[FirstIndex][SecondIndex] = LineID;
 
             return 0;
         }

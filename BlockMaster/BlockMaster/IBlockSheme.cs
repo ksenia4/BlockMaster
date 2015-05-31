@@ -10,13 +10,15 @@ namespace BlockMaster
 {
     interface IBlockSheme
     {
-        int SetStartPosition(string ID, Condition CurrentCondition);
+        int SetStartPosition();
 
-        int SetEndPosition(string ID, Condition CurrentCondition);
+        int SetEndPosition();
 
-        int SetComment(string ID, Condition CurrentCondition, string Comment);
+        int SetComment(string Comment);
 
-        int SetTitle(string ID, Condition CurrentCondition, string Title);
+        int SetTitle(string Title);
+
+        int SetPositionAndSize(double Top, double Left);
 
     }
 }

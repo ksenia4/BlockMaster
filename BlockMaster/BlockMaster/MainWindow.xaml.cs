@@ -36,7 +36,7 @@ namespace BlockMaster
         Condition CurrentCondition;
        
         //++ksu
-        StateStore StateStore;
+        StateStore CurrentStateStore;
         //--ksu
 
 
@@ -64,7 +64,7 @@ namespace BlockMaster
             StretchController.MouseDown +=StretchController_MouseDown;
 
             //++ksu
-            StateStore = new StateStore();
+            CurrentStateStore = new StateStore();
             CurrentCondition = new Condition();
             //--ksu
 
@@ -285,10 +285,12 @@ namespace BlockMaster
                 //lab.MouseDown += new MouseButtonEventHandler(OnShapeClick);
 
                 //++ksu
-                CurrentShape.Name = "k4444"; // здесь нужно генерировать идентификатор
-                GBox NewShape = new GBox(CurrentShape, "подпись", "коммент", 1);
+                CurrentShape.Name = "k4444" + CurrentCondition.AmountOfelements.ToString(); // здесь нужно генерировать идентификатор
+                GBox NewShape = new GBox(CurrentShape, "подпись", " ", 1);
                 Condition NewCondition = new Condition(CurrentCondition);
                 NewCondition.AddElementInCondition(NewShape);
+
+                CurrentStateStore.AddConditionInStore(CurrentCondition);
                 CurrentCondition = NewCondition;
                 //--ksu
 
@@ -297,6 +299,10 @@ namespace BlockMaster
             if (moving)
             {
                 moving = false;
+                
+                //++ksu
+                ChangeSizeAndPosition();
+                //--ksu
             }
             if (stretching)
             {
@@ -309,6 +315,8 @@ namespace BlockMaster
                     Canvas.SetLeft(StretchController, Canvas.GetLeft(CurrentShape) + CurrentShape.ActualWidth - 4);
                     Canvas.SetTop(StretchController, Canvas.GetTop(CurrentShape) + CurrentShape.ActualHeight - 4);
                 }
+
+               
                 else
                 {
 
@@ -327,6 +335,10 @@ namespace BlockMaster
 
 
                 }
+
+                //++ksu
+                ChangeSizeAndPosition();
+                //--ksu
             }
         }
 
@@ -553,6 +565,21 @@ namespace BlockMaster
                 SelectedBorder.Visibility = Visibility.Hidden;
             }
         }
+
+        //++ksu
+        private void ChangeSizeAndPosition()
+        {
+            Condition NewCondition = new Condition(CurrentCondition);
+            CurrentStateStore.AddConditionInStore(CurrentCondition);
+
+            GBox CurrentGBox = NewCondition.TakeGBoxFromCondition(CurrentShape.Name);
+            double Top = Canvas.GetTop(CurrentShape);
+            double Left = Canvas.GetLeft(CurrentShape);
+            CurrentGBox.SetPositionAndSize(Top, Left);
+            
+            CurrentCondition = NewCondition;
+        }
+        //--ksu
 
     }
 }
