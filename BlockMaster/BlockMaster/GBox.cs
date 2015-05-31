@@ -9,42 +9,69 @@ namespace BlockMaster
 {
     class GBox: IBlockSheme
     {
+       
         private Shape GElement;
-        private Label GComment;
-        private Box Element; 
+        public Box Element;
 
-        
-        GBox()
+        public GBox()
         { }
 
-        GBox(Shape InElement, Label InComment)
+        public GBox(Shape InElement)
         {
             GElement = InElement;
-            GComment = InComment;
 
             Element = new Box();
-            Element.Label_MBottom = InComment.Margin.Bottom;
-            Element.Label_MLeft = InComment.Margin.Left;
-            Element.Shape_MRight = InComment.Margin.Right;
-            Element.Label_MTop = InComment.Margin.Top;
-            Element.Label_Text = InComment.Content.ToString();
 
-            Element.Shape_MBottom = InElement.Margin.Bottom;
-            Element.Shape_MLeft = InElement.Margin.Left;
-            Element.Shape_MRight = InElement.Margin.Right;
-            Element.Shape_MTop = InElement.Margin.Top;
+            Element.ID = InElement.Name;
+        }
+
+        public GBox(Shape InElement, string Title,  string Comment, int Type)
+        {
+           
+            GElement    = InElement;
+
+            Element     = new Box();
+
+            Element.ID = InElement.Name;
+
+            Element.Top     = Canvas.GetTop(InElement);
+            Element.Left    = Canvas.GetLeft(InElement);
+            Element.Height  = InElement.Height;
+            Element.Width   = InElement.Width;
+
+            Element.Comment = Comment;
+            Element.Title   = Title;
+            Element.Type    = Type;
 
         }
 
-        public int SetStartPosition(Shape IElement)
+        public int SetStartPosition(string ID, Condition CurrentCondition)
         {
-            Element.StartPosition = true;
+            GBox Element = CurrentCondition.BoxIDs[ID];
+            Element.Element.StartPosition = true;
             return 0;
         }
-        public int SetEndPosition(Shape IElement)
+
+        public int SetEndPosition(string ID, Condition CurrentCondition)
         {
-            Element.EndPosition = true;
+            GBox Element = CurrentCondition.BoxIDs[ID];
+            Element.Element.EndPosition = true;
             return 0;
         }
+
+        public int SetComment(string ID, Condition CurrentCondition, string Comment)
+        {
+            GBox Element = CurrentCondition.BoxIDs[ID];
+            Element.Element.Comment = Comment;
+            return 0;
+        }
+
+        public int SetTitle(string ID, Condition CurrentCondition, string Title)
+        {
+            GBox Element = CurrentCondition.BoxIDs[ID];
+            Element.Element.Title = Title;
+            return 0;
+        }
+
     }
 }

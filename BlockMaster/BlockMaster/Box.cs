@@ -8,19 +8,19 @@ namespace BlockMaster
 {
     class Box
     {
-        public string Label_Text;
-        public double Label_MLeft;
-        public double Label_MTop;
-        public double Label_Mright;
-        public double Label_MBottom;
+        public string ID;
 
-        public double Shape_MLeft;
-        public double Shape_MTop;
-        public double Shape_MRight;
-        public double Shape_MBottom;
+        public double Left;
+        public double Top;
+        public double Height;
+        public double Width;
 
         public bool StartPosition;
         public bool EndPosition;
+
+        public string Title;
+        public string Comment;
+        public int Type; // 0 - Ellips; 1 - Rectangle; 2 - Rhomb
 
         public Box()
         {  }

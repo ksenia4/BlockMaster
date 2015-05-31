@@ -34,6 +34,11 @@ namespace BlockMaster
         Polygon CurPoly;
 
         Condition CurrentCondition;
+       
+        //++ksu
+        StateStore StateStore;
+        //--ksu
+
 
         bool action = false;
 
@@ -57,6 +62,12 @@ namespace BlockMaster
             StretchController.Height = 8;
             StretchController.Width = 8;
             StretchController.MouseDown +=StretchController_MouseDown;
+
+            //++ksu
+            StateStore = new StateStore();
+            CurrentCondition = new Condition();
+            //--ksu
+
         }
 
         public double GetDistanceBetweenPoints(Point p, Point q)
@@ -273,6 +284,13 @@ namespace BlockMaster
                 CurrentShape.MouseDown += new MouseButtonEventHandler(OnShapeClick);
                 //lab.MouseDown += new MouseButtonEventHandler(OnShapeClick);
 
+                //++ksu
+                CurrentShape.Name = "k4444"; // здесь нужно генерировать идентификатор
+                GBox NewShape = new GBox(CurrentShape, "подпись", "коммент", 1);
+                Condition NewCondition = new Condition(CurrentCondition);
+                NewCondition.AddElementInCondition(NewShape);
+                CurrentCondition = NewCondition;
+                //--ksu
 
                 drawing = false;
             }

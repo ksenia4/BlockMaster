@@ -9,5 +9,16 @@ namespace BlockMaster
     class Link
     {
         public int ID;
+
+        public string Title;
+        public string Comment;
+
+        public Link()
+        {}
+
+        public Link(int InID)
+        {
+            ID = InID;
+        }
     }
 }
