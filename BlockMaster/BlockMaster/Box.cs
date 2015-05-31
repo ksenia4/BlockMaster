@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BlockMaster
 {
-    class Box
+    public class Box
     {
         public string ID;
 

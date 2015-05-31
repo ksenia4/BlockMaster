@@ -23,6 +23,18 @@ namespace BlockMaster
             GComment = InComment;
         }
 
+        //Sticky
+        public GLine(string StartID, string EndID, string LinkID)
+        {
+            StartID = StartID.Substring(1);
+            EndID = EndID.Substring(1);
+            LinkID = LinkID.Substring(1);
+            Line = new Link(LinkID);
+            Line.Start = StartID;
+            Line.End = EndID;
+        }
+        //--Sticky
+
         public int SetStartPosition()
         {
             return 1;
@@ -48,5 +60,12 @@ namespace BlockMaster
         {
             return 1;
         }
+
+        //Sticky
+        public Link GetLink()
+        {
+            return Line;
+        }
+        //--Sticky
     }
 }

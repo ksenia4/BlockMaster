@@ -7,7 +7,7 @@ using System.Windows.Shapes;
 using System.Windows.Controls;
 namespace BlockMaster
 {
-    class GBox: IBlockSheme
+    public class GBox: IBlockSheme
     {
        
         private Shape GElement;
@@ -32,7 +32,12 @@ namespace BlockMaster
 
             Element     = new Box();
 
-            Element.ID = InElement.Name;
+            //Sticky
+            
+            //Element.ID = InElement.Name;
+            Element.ID = InElement.Name.Substring(1);
+
+            //--Sticky
 
             Element.Top     = Canvas.GetTop(InElement);
             Element.Left    = Canvas.GetLeft(InElement);

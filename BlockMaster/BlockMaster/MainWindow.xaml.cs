@@ -200,6 +200,7 @@ namespace BlockMaster
             if (stretching)
             {
                 StretchController.Visibility = Visibility.Hidden;
+                SelectedBorder.Visibility = Visibility.Hidden;
 
                 CurrentPosition = Mouse.GetPosition(MainCanvas);
 
@@ -240,7 +241,7 @@ namespace BlockMaster
                 }
                 else Canvas.SetRight(SelectedBorder, CurrentPosition.X);
 
-                if (ShapeType == 4)
+                if (CurrentCondition.TakeGBoxFromCondition(CurrentShape.Name.Substring(1)).Element.Type == 4)
                 {
                     if (offsetWidth != 0)
                     {
@@ -285,15 +286,15 @@ namespace BlockMaster
                 //lab.MouseDown += new MouseButtonEventHandler(OnShapeClick);
 
                 //++ksu
-                CurrentShape.Name = "k4444" + CurrentCondition.AmountOfelements.ToString(); // здесь нужно генерировать идентификатор
-                GBox NewShape = new GBox(CurrentShape, "подпись", " ", 1);
+                CurrentShape.Name = "S" + CurrentCondition.AmountOfelements.ToString(); // здесь нужно генерировать идентификатор
+                GBox NewShape = new GBox(CurrentShape, "Текст", " ", ShapeType);
                 Condition NewCondition = new Condition(CurrentCondition);
                 NewCondition.AddElementInCondition(NewShape);
 
                 CurrentStateStore.AddConditionInStore(CurrentCondition);
                 CurrentCondition = NewCondition;
                 //--ksu
-
+                RegisterName(CurrentShape.Name, CurrentShape);
                 drawing = false;
             }
             if (moving)
@@ -309,7 +310,13 @@ namespace BlockMaster
                 action = false;
                 stretching = false;
                 StretchController.Visibility = Visibility.Visible;
-                if (CurrentShape.Name != "Poly")
+                SelectedBorder.Visibility = Visibility.Visible;
+
+                //Sticky
+                
+                //--Sticky
+
+                if (CurrentCondition.TakeGBoxFromCondition(CurrentShape.Name.Substring(1)).Element.Type != 4)
                 {
 
                     Canvas.SetLeft(StretchController, Canvas.GetLeft(CurrentShape) + CurrentShape.ActualWidth - 4);
@@ -348,6 +355,9 @@ namespace BlockMaster
             if (ShapeType == 3)
             {
                 TargetShape = (Shape)e.Source;
+
+                string CurrentName = CurrentShape.Name;
+                string TargetName = TargetShape.Name;
 
                 double tWidth = TargetShape.ActualWidth;
                 double tHeight = TargetShape.ActualHeight;
@@ -473,6 +483,7 @@ namespace BlockMaster
                 MainCanvas.Children.Add(R1);*/
 
                 System.Windows.Shapes.Line line = new System.Windows.Shapes.Line();
+                line.Name = "L" + CurrentCondition.AmountOfelements.ToString();
                 line.Visibility = System.Windows.Visibility.Visible;
                 line.StrokeThickness = 2;
                 line.Stroke = System.Windows.Media.Brushes.Black;
@@ -484,6 +495,15 @@ namespace BlockMaster
                 MainCanvas.Children.Add(line);
                 TargetShape = null;
                 ShapeType = 2;
+
+                //Sticky
+                Condition NewCondition = new Condition(CurrentCondition);
+                GLine gLine = new GLine(CurrentName, TargetName, line.Name);
+                NewCondition.AddConnection(CurrentName, TargetName, gLine, line.Name);
+                CurrentStateStore.AddConditionInStore(CurrentCondition);
+                CurrentCondition = NewCondition;
+                //--Sticky
+                
             }
            
             else if (ShapeType == 2)
@@ -498,7 +518,8 @@ namespace BlockMaster
             }
             SelectedBorder.Visibility = Visibility.Visible;
             //MessageBox.Show("Purr");
-            CurrentShape = (Shape)e.Source;
+            DrawSelectedBorder(CurrentShape.Name, CurrentCondition.TakeGBoxFromCondition(CurrentShape.Name.Substring(1)).Element.Type);
+           /* CurrentShape = (Shape)e.Source;
             if (CurrentShape.Name != "Poly")
             {
                 SelectedBorder.StrokeThickness = 1;
@@ -534,7 +555,7 @@ namespace BlockMaster
 
                 HeightBox.Text = CurrentShape.Height.ToString();
                 WidthBox.Text = CurrentShape.Width.ToString();
-            }
+            }*/
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
@@ -572,14 +593,122 @@ namespace BlockMaster
             Condition NewCondition = new Condition(CurrentCondition);
             CurrentStateStore.AddConditionInStore(CurrentCondition);
 
-            GBox CurrentGBox = NewCondition.TakeGBoxFromCondition(CurrentShape.Name);
+            //Sticky
+            GBox CurrentGBox = NewCondition.TakeGBoxFromCondition(CurrentShape.Name.Substring(1));
+            //--Sticky
+
             double Top = Canvas.GetTop(CurrentShape);
             double Left = Canvas.GetLeft(CurrentShape);
             CurrentGBox.SetPositionAndSize(Top, Left);
             
             CurrentCondition = NewCondition;
         }
+
+        private void Button_Click_4(object sender, RoutedEventArgs e)
+        {
+            ShapeType = 1;
+        }
         //--ksu
+
+        public void DrawCondition()
+        {
+            foreach (System.Collections.Generic.KeyValuePair<string,GBox> element in CurrentCondition.BoxIDs)
+            {
+                DrawShape(element.Value, element.Key);
+            }
+            foreach (System.Collections.Generic.KeyValuePair<string, GLine> link in CurrentCondition.LineIDs)
+            {
+                string LinkID;
+                LinkID = "L" + link.Value.GetLink().ID.ToString();
+                string StartID;
+                StartID = "S" + link.Value.GetLink().Start.ToString();
+                string EndID;
+                EndID = "S" + link.Value.GetLink().Start.ToString();
+
+                //CurrentShape = 
+
+                //DrawLink(, LinkID);
+            }
+        }
+
+        public void DrawShape(GBox gBox, string ID)
+        {
+            
+                if (gBox.Element.Type == 0)
+                {
+                    CurrentShape = new Ellipse();
+                }
+                if (gBox.Element.Type == 1)
+                {
+                    CurrentShape = new Rectangle();
+                }
+
+                CurrentShape.Name = "S" + ID.ToString();
+
+                CurrentShape.Height = gBox.Element.Height;
+                CurrentShape.Width = gBox.Element.Width;
+
+                CurrentShape.StrokeThickness = 3;
+                CurrentShape.Stroke = Brushes.Blue;
+
+                SolidColorBrush mySolidColorBrush = new SolidColorBrush();
+
+                mySolidColorBrush.Color = Color.FromArgb(255, 255, 255, 255);
+                CurrentShape.Fill = mySolidColorBrush;
+
+                MainCanvas.Children.Add(CurrentShape);
+                Canvas.SetLeft(CurrentShape, gBox.Element.Left);
+                Canvas.SetTop(CurrentShape, gBox.Element.Top);
+        }
+
+        public void DrawLink(string StartID, string EndID, string Id, int TargetType)
+        {
+
+        }
+
+        public void DrawSelectedBorder(string SelectedName, int SelectedType)
+        {
+            SelectedBorder.Visibility = Visibility.Visible;
+            //MessageBox.Show("Purr");
+            //CurrentShape = (Shape)Application.Current.MainWindow.Co;
+            CurrentShape = (Shape)MainCanvas.FindName(SelectedName);
+            if (SelectedType!=4)
+            {
+                SelectedBorder.StrokeThickness = 1;
+                SelectedBorder.Stroke = Brushes.Black;
+                Canvas.SetLeft(SelectedBorder, Canvas.GetLeft(CurrentShape));
+                Canvas.SetTop(SelectedBorder, Canvas.GetTop(CurrentShape));
+                SelectedBorder.Height = CurrentShape.Height;
+                SelectedBorder.Width = CurrentShape.Width;
+
+                StretchController.Visibility = Visibility.Visible;
+                Canvas.SetLeft(StretchController, Canvas.GetLeft(CurrentShape) + CurrentShape.ActualWidth - 4);
+                Canvas.SetTop(StretchController, Canvas.GetTop(CurrentShape) + CurrentShape.ActualHeight - 4);
+
+                HeightBox.Text = CurrentShape.Height.ToString();
+                WidthBox.Text = CurrentShape.Width.ToString();
+            }
+            else
+            {
+                SelectedBorder.StrokeThickness = 1;
+                SelectedBorder.Stroke = Brushes.Black;
+                double diagonal = Math.Sqrt(Math.Pow(CurrentShape.ActualWidth, 2) + Math.Pow(CurrentShape.ActualHeight, 2));
+
+                Point center = CurrentShape.TransformToAncestor(MainCanvas).Transform(new Point(CurrentShape.ActualWidth / 2, CurrentShape.ActualHeight / 2));
+
+                Canvas.SetLeft(SelectedBorder, center.X - diagonal / 2);
+                Canvas.SetTop(SelectedBorder, center.Y - diagonal / 2);
+                SelectedBorder.Height = diagonal;
+                SelectedBorder.Width = diagonal;
+
+                StretchController.Visibility = Visibility.Visible;
+                Canvas.SetLeft(StretchController, Canvas.GetLeft(SelectedBorder) + diagonal);
+                Canvas.SetTop(StretchController, Canvas.GetTop(SelectedBorder) + diagonal);
+
+                HeightBox.Text = CurrentShape.Height.ToString();
+                WidthBox.Text = CurrentShape.Width.ToString();
+            }
+        }
 
     }
 }
