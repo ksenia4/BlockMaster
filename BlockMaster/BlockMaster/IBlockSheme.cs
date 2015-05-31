@@ -18,7 +18,7 @@ namespace BlockMaster
 
         int SetTitle(string Title);
 
-        int SetPositionAndSize(double Top, double Left, double Height, double Width);
+        int SetPositionAndSize(double Top, double Left);
 
     }
 }

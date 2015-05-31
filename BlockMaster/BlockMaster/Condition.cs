@@ -61,7 +61,7 @@ namespace BlockMaster
         {
             AmountOfelements++;
             BoxIDs.Add(Element.Element.ID, Element);
-            IDsForMatrix.Add(Element.Element.ID, AmountOfelements);
+            IDsForMatrix.Add(Element.Element.ID, AmountOfelements-1);
             CondMatrix.Add(new List<string>(AmountOfelements));
 
             for (int i = 0; i < AmountOfelements-1; i++)
@@ -79,6 +79,9 @@ namespace BlockMaster
 
         public int AddConnection(string ID1, string ID2, GLine GlineEl, string LineID)
         {
+            AmountOfelements++;
+
+
             int FirstIndex = IDsForMatrix[ID1];
             int SecondIndex = IDsForMatrix[ID2];
 
@@ -120,6 +123,8 @@ namespace BlockMaster
             
             return 0;
         }
+
+
 
         public GBox TakeGBoxFromCondition(string ID)
         {
