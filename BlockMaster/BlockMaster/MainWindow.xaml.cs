@@ -109,6 +109,7 @@ namespace BlockMaster
                         RotateTransform rotateTransform1 =
                         new RotateTransform(45);
                         CurrentShape.RenderTransform = rotateTransform1;
+                        
                         //CurPoly = (Polygon)CurrentShape;
                         /*CurPoly = new Polygon();
                         MainCanvas.Children.Add(CurPoly);*/
@@ -281,7 +282,7 @@ namespace BlockMaster
                 if (ShapeType == 4)
                 {
                     double left = Canvas.GetLeft(CurrentShape); double top = Canvas.GetTop(CurrentShape);
-                    
+                    CurrentShape.RenderTransform = null;
                 }
                 
                 CurrentShape.MouseDown += new MouseButtonEventHandler(OnShapeClick);
@@ -290,6 +291,9 @@ namespace BlockMaster
                 //++ksu
                 CurrentShape.Name = "S" + CurrentCondition.AmountOfelements.ToString(); // здесь нужно генерировать идентификатор
                 GBox NewShape = new GBox(CurrentShape, "Текст", " ", ShapeType);
+
+                if (ShapeType == 4) CurrentShape.RenderTransform = new RotateTransform(45);
+
                 Condition NewCondition = new Condition(CurrentCondition);
                 NewCondition.AddElementInCondition(NewShape);
 
@@ -371,14 +375,16 @@ namespace BlockMaster
 
                 double tWidth = TargetShape.DesiredSize.Width;
                 double tHeight = TargetShape.DesiredSize.Height;
-                
-                if (CurrentShape.Name == "Poly")
+
+               //CurrentCondition.TakeGBoxFromCondition(CurrentShape.Name.Substring(1)).Element.Type;
+
+               if (CurrentCondition.TakeGBoxFromCondition(CurrentShape.Name.Substring(1)).Element.Type == 4)
                 {
                     CurrentShape = SelectedBorder;
                 }
                 Point targetCenter =
                     TargetShape.TransformToAncestor(MainCanvas).Transform(new Point(TargetShape.DesiredSize.Width / 2, TargetShape.DesiredSize.Height / 2));
-                if (TargetShape.Name == "Poly")
+                if (CurrentCondition.TakeGBoxFromCondition(TargetShape.Name.Substring(1)).Element.Type == 4)
                 {
                     Rectangle HitBox = new Rectangle();
                     MainCanvas.Children.Add(HitBox);
@@ -654,7 +660,7 @@ namespace BlockMaster
                 {
                     CurrentShape = new Ellipse();
                 }
-                if (gBox.Element.Type == 1)
+                if (gBox.Element.Type == 1 || gBox.Element.Type == 4)
                 {
                     CurrentShape = new Rectangle();
                 }
@@ -682,6 +688,7 @@ namespace BlockMaster
                 //CurrentShape.Arrange(new Rect(0, 0, CurrentShape.DesiredWidth, CurrentShape.DesiredHeight));
             
             RegisterName(CurrentShape.Name, CurrentShape);
+            if (gBox.Element.Type == 4) CurrentShape.RenderTransform = new RotateTransform(45);
         }
 
         public void DrawLink(string StartID, string EndID, string Id, int TargetType)
@@ -692,7 +699,15 @@ namespace BlockMaster
             CurrentShape.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
             TargetShape.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
 
-            DrawSelectedBorder(CurrentShape.Name, 0);
+            /*CurrentShape.Arrange(new Rect(0, 0, CurrentShape.DesiredSize.Width, CurrentShape.DesiredSize.Height));
+            TargetShape.Arrange(new Rect(0, 0, TargetShape.DesiredSize.Width, TargetShape.DesiredSize.Height));*/
+
+            /*MainCanvas.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+            MainCanvas.Arrange(new Rect(0, 0, MainCanvas.DesiredSize.Width, MainCanvas.DesiredSize.Height));*/
+
+            DrawSelectedBorder(CurrentShape.Name, CurrentCondition.TakeGBoxFromCondition(CurrentShape.Name.Substring(1)).Element.Type);
+
+            MainCanvas.UpdateLayout();
 
             string CurrentName = CurrentShape.Name;
             string TargetName = TargetShape.Name;
@@ -700,13 +715,16 @@ namespace BlockMaster
             double tWidth = TargetShape.DesiredSize.Width;
             double tHeight = TargetShape.DesiredSize.Height;
 
-            if (CurrentShape.Name == "Poly")
+            if (CurrentCondition.TakeGBoxFromCondition(CurrentShape.Name.Substring(1)).Element.Type == 4)
             {
                 CurrentShape = SelectedBorder;
             }
             Point targetCenter =
                 TargetShape.TransformToAncestor(MainCanvas).Transform(new Point(TargetShape.DesiredSize.Width / 2, TargetShape.DesiredSize.Height / 2));
-            if (TargetShape.Name == "Poly")
+           /* targetCenter.X += Canvas.GetLeft(TargetShape);
+            targetCenter.Y += Canvas.GetTop(TargetShape);*/
+
+            if (CurrentCondition.TakeGBoxFromCondition(TargetShape.Name.Substring(1)).Element.Type == 4)
             {
                 Rectangle HitBox = new Rectangle();
                 MainCanvas.Children.Add(HitBox);
@@ -715,17 +733,27 @@ namespace BlockMaster
                 //HitBox.Stroke = Brushes.Black;
                 Point center = TargetShape.TransformToAncestor(MainCanvas).Transform(new Point(TargetShape.DesiredSize.Width / 2, TargetShape.DesiredSize.Height / 2));
 
+                //TargetShape.RenderTransform = null;
+               // center.X += Canvas.GetLeft(TargetShape); center.Y += Canvas.GetTop(TargetShape);
+
                 Canvas.SetLeft(HitBox, center.X - diagonal / 2);
                 Canvas.SetTop(HitBox, center.Y - diagonal / 2);
                 HitBox.Height = diagonal;
                 HitBox.Width = diagonal;
 
-                // HitBox.Visibility = Visibility.Hidden;
+                HitBox.Visibility = Visibility.Visible;
                 //HitBox.IsEnabled = false;
 
                 TargetShape = HitBox;
                 targetCenter.X = Canvas.GetLeft(TargetShape) + diagonal / 2;
                 targetCenter.Y = Canvas.GetTop(TargetShape) + diagonal / 2;
+
+               /* targetCenter =
+                TargetShape.TransformToAncestor(MainCanvas).Transform(new Point(TargetShape.DesiredSize.Width / 2, TargetShape.DesiredSize.Height / 2));*/
+
+               /* targetCenter.X += Canvas.GetLeft(HitBox);
+                targetCenter.Y += Canvas.GetTop(HitBox);*/
+
                 tWidth = diagonal;
                 tHeight = diagonal;
             }
@@ -733,8 +761,8 @@ namespace BlockMaster
             Point currentCenter =
                 CurrentShape.TransformToAncestor(MainCanvas).Transform(new Point(CurrentShape.DesiredSize.Width / 2, CurrentShape.DesiredSize.Height / 2));
 
-            currentCenter.X += Canvas.GetLeft(CurrentShape);
-            currentCenter.Y += Canvas.GetTop(CurrentShape);
+           /* currentCenter.X += Canvas.GetLeft(CurrentShape);
+            currentCenter.Y += Canvas.GetTop(CurrentShape);*/
 
             double distance;
             double optimalDistance;
@@ -773,8 +801,8 @@ namespace BlockMaster
             }
 
             //now for targeted shape
-            targetCenter.X += Canvas.GetLeft(TargetShape);
-            targetCenter.Y += Canvas.GetTop(TargetShape);
+            /*targetCenter.X += Canvas.GetLeft(TargetShape);
+            targetCenter.Y += Canvas.GetTop(TargetShape);*/
 
             candidate = targetCenter; candidate.Y += tHeight / 2;
             optimalDistance = GetDistanceBetweenPoints(candidate, currentOptimal);
@@ -828,6 +856,10 @@ namespace BlockMaster
             //MessageBox.Show("Purr");
             //CurrentShape = (Shape)Application.Current.MainWindow.Co;
             CurrentShape = (Shape)MainCanvas.FindName(SelectedName);
+            CurrentShape.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+
+            MainCanvas.UpdateLayout();
+
             if (SelectedType!=4)
             {
                 SelectedBorder.StrokeThickness = 1;
@@ -848,9 +880,10 @@ namespace BlockMaster
             {
                 SelectedBorder.StrokeThickness = 1;
                 SelectedBorder.Stroke = Brushes.Black;
-                double diagonal = Math.Sqrt(Math.Pow(CurrentShape.ActualWidth, 2) + Math.Pow(CurrentShape.ActualHeight, 2));
+                double diagonal = Math.Sqrt(Math.Pow(CurrentShape.ActualWidth, 2) + Math.Pow(CurrentShape.DesiredSize.Height, 2));
 
-                Point center = CurrentShape.TransformToAncestor(MainCanvas).Transform(new Point(CurrentShape.ActualWidth / 2, CurrentShape.ActualHeight / 2));
+                Point center = CurrentShape.TransformToAncestor(MainCanvas).Transform(new Point(CurrentShape.DesiredSize.Width / 2, CurrentShape.DesiredSize.Height / 2));
+                
 
                 Canvas.SetLeft(SelectedBorder, center.X - diagonal / 2);
                 Canvas.SetTop(SelectedBorder, center.Y - diagonal / 2);
