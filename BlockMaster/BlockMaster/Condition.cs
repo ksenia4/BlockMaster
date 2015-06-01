@@ -15,10 +15,12 @@ namespace BlockMaster
 
         List<List<string>> CondMatrix;
         public int AmountOfelements;
+        public int AmountOfLines;
 
         public Condition()
         {
             AmountOfelements = 0;
+            AmountOfLines = 0;
             BoxIDs = new  Dictionary<string, GBox>();
             LineIDs = new Dictionary<string, GLine>();
             IDsForMatrix = new Dictionary<string, int>();
@@ -28,6 +30,8 @@ namespace BlockMaster
         public Condition(Condition CurrentCondition)
         {
             AmountOfelements = CurrentCondition.AmountOfelements;
+            AmountOfLines = CurrentCondition.AmountOfLines;
+
             BoxIDs = new Dictionary<string, GBox>();
             LineIDs = new Dictionary<string, GLine>();
             IDsForMatrix = new Dictionary<string, int>();
@@ -79,8 +83,7 @@ namespace BlockMaster
 
         public int AddConnection(string ID1, string ID2, GLine GlineEl, string LineID)
         {
-            AmountOfelements++;
-
+            AmountOfLines++;
 
             int FirstIndex = IDsForMatrix[ID1];
             int SecondIndex = IDsForMatrix[ID2];
@@ -93,6 +96,8 @@ namespace BlockMaster
 
         public int DeleteLineFromCondition(GLine Line)
         {
+            AmountOfLines--;
+            
             LineIDs.Remove(Line.Line.ID);
 
             for (int i = 0; i < AmountOfelements; i++)
@@ -112,10 +117,20 @@ namespace BlockMaster
                
             for (int i = 0; i < AmountOfelements; i++)
             {
+                if (CondMatrix[IndexOfElement][i] != "")
+                {
+                    AmountOfLines--;
+                    LineIDs.Remove(CondMatrix[IndexOfElement][i]);
+                }
                 CondMatrix[IndexOfElement][i] = "";
             }
             for (int j = 0; j < AmountOfelements; j++)
             {
+                if (CondMatrix[j][IndexOfElement] != "")
+                {
+                    AmountOfLines--;
+                    LineIDs.Remove(CondMatrix[j][IndexOfElement]);
+                }
                 CondMatrix[j][IndexOfElement] = "";
             }
             
@@ -123,8 +138,6 @@ namespace BlockMaster
             
             return 0;
         }
-
-
 
         public GBox TakeGBoxFromCondition(string ID)
         {

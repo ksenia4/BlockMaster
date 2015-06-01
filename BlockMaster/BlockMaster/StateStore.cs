@@ -9,15 +9,18 @@ namespace BlockMaster
     class StateStore
     {
         Stack<Condition> StateStoreStack;
+        Stack<Condition> DopStateStoreStack;
 
         public StateStore()
         {
             StateStoreStack = new Stack<Condition>();
+            DopStateStoreStack = new Stack<Condition>();
         }
 
         public StateStore(Condition NewCondition)
         {
             StateStoreStack = new Stack<Condition>();
+            DopStateStoreStack = new Stack<Condition>();
             StateStoreStack.Push(NewCondition);
         }
 
@@ -29,7 +32,16 @@ namespace BlockMaster
 
         public Condition TakeConditionFromStore()
         {
-            return StateStoreStack.Pop();
+            Condition TakenCondition = StateStoreStack.Pop();
+            DopStateStoreStack.Push(TakenCondition);
+            return TakenCondition;
+        }
+
+        public Condition TakeConditionFromDopStore()
+        {
+            Condition TakenCondition = DopStateStoreStack.Pop();
+            StateStoreStack.Push(TakenCondition);
+            return TakenCondition;
         }
     }
 }

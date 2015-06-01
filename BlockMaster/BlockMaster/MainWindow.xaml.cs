@@ -866,5 +866,23 @@ namespace BlockMaster
             }
         }
 
+        private void MenuItem_Click_1(object sender, RoutedEventArgs e)
+        {
+            CurrentCondition = CurrentStateStore.TakeConditionFromStore();
+            MainCanvas.Children.Clear();
+            MainCanvas.Children.Add(SelectedBorder);
+            MainCanvas.Children.Add(StretchController);
+            DrawCondition();
+        }
+
+        private void MenuItem_Click_2(object sender, RoutedEventArgs e)
+        {
+            CurrentCondition = CurrentStateStore.TakeConditionFromDopStore();
+            MainCanvas.Children.Clear();
+            MainCanvas.Children.Add(SelectedBorder);
+            MainCanvas.Children.Add(StretchController);
+            DrawCondition();
+        }
+
     }
 }

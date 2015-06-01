@@ -5,7 +5,10 @@
     <Grid>
         <Menu Height="28" VerticalAlignment="Top" Background="#FF1AE0E0">
             <MenuItem Header="Файл"/>
-            <MenuItem Header="Првка"/>
+            <MenuItem Header="Правка">
+                <MenuItem Header="Отмена" HorizontalAlignment="Left" Width="145" Click="MenuItem_Click_1"/>
+                <MenuItem Header="Вернуть" HorizontalAlignment="Left" Width="145" Click="MenuItem_Click_2"/>
+            </MenuItem>
             <MenuItem Header="Справка"/>
         </Menu>
         <Canvas x:Name="MainCanvas" HorizontalAlignment="Left" Margin="124,33,0,10" Width="692" Background="White" MouseDown="MainCanvas_MouseDown" MouseLeftButtonDown="MainCanvas_MouseLeftButtonDown" MouseMove="MainCanvas_MouseMove" MouseLeftButtonUp="MainCanvas_MouseLeftButtonUp"/>
