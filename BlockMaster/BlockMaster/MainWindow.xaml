@@ -19,7 +19,7 @@
                 <Button Content="Ромб" VerticalAlignment="Top" RenderTransformOrigin="1.12,2.682" Height="24" Click="Button_Click_2" Background="White"/>
                 <Button Content="Связь" Click="Button_Click_3" Background="White"/>
                 <Button Content="Прямоугольник" Background="White" Click="Button_Click_4"/>
-                <Button Content="Удалить" Background="White" Click="Button_Click_5" />
+                <Button Content="Удалить" Background="White" Click="Button_Click_5" LostFocus="Button_LostFocus_1" />
             </ToolBarPanel>
         </Border>
         <Border BorderBrush="#FFF0F0F0" BorderThickness="3" Margin="821,33,10,10" CornerRadius="0" Background="#FFF0F0F0">
@@ -29,7 +29,9 @@
                 <Label Content="Высота:" HorizontalAlignment="Left" Height="31" Margin="10,44,0,0" VerticalAlignment="Top" Width="58"/>
                 <TextBox Name ="HeightBox" HorizontalAlignment="Left" Height="26" Margin="73,43,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="100"/>
                 <Label Content="Текст:" HorizontalAlignment="Left" Height="31" Margin="10,75,0,0" VerticalAlignment="Top" Width="58"/>
-                <TextBox Name ="TitleBox" HorizontalAlignment="Left" Height="26" Margin="73,74,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="100" TextChanged="TitleBox_TextChanged"/>
+                <TextBox Name ="TitleBox" HorizontalAlignment="Left" Height="26" Margin="73,74,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="100" TextChanged="TitleBox_TextChanged" LostFocus="TitleBox_LostFocus"/>
+                <Label Content="Комментарий:" HorizontalAlignment="Left" Height="31" Margin="10,106,0,0" VerticalAlignment="Top" Width="58"/>
+                <TextBox Name ="CommentBox" HorizontalAlignment="Left" Height="26" Margin="73,105,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="100" TextChanged="CommentBox_TextChanged" LostFocus="CommentBox_LostFocus" />
                 
             </Grid>
         </Border>

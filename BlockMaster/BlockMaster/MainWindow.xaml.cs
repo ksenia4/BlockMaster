@@ -89,7 +89,7 @@ namespace BlockMaster
 
         private void MainCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (!action)
+            if (!action && ShapeType != 2 && ShapeType !=3)
             {
                 if (SelectedBorder.Visibility == Visibility.Visible)
                 {
@@ -530,6 +530,22 @@ namespace BlockMaster
                 //Sticky
                 Condition NewCondition = new Condition(CurrentCondition);
                 GLine gLine = new GLine(CurrentName, TargetName, line.Name);
+                gLine.SetTitle("Связь");
+
+                Label lab = new Label();
+                lab.Content = gLine.Line.Title;
+
+                lab.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+                Size s = lab.DesiredSize;
+
+                Point centerl = new Point((line.X1 + line.X2)/2, (line.Y1 + line.Y2)/2);
+                /*Canvas.SetLeft(lab, Canvas.GetLeft(CurrentShape));
+                Canvas.SetTop(lab, Canvas.GetTop(CurrentShape) + (Canvas.GetBottom(CurrentShape)-Canvas.GetTop(CurrentShape))/4.0);*/
+                Canvas.SetLeft(lab, centerl.X - s.Width / 2);
+                Canvas.SetTop(lab, centerl.Y - s.Height / 2);
+                lab.Foreground = Brushes.OrangeRed;
+                MainCanvas.Children.Add(lab);
+
                 NewCondition.AddConnection(CurrentName.Substring(1), TargetName.Substring(1), gLine, line.Name.Substring(1));
                 CurrentStateStore.AddConditionInStore(CurrentCondition);
                 CurrentCondition = NewCondition;
@@ -557,7 +573,7 @@ namespace BlockMaster
             DrawSelectedBorder(CurrentShape.Name, CurrentCondition.TakeGBoxFromCondition(CurrentShape.Name.Substring(1)).Element.Type);
 
             TitleBox.Text = CurrentCondition.TakeGBoxFromCondition(CurrentShape.Name.Substring(1)).Element.Title;
-
+            CommentBox.Text = CurrentCondition.TakeGBoxFromCondition(CurrentShape.Name.Substring(1)).Element.Comment;
            /* 
             if (CurrentShape.Name != "Poly")
             {
@@ -888,6 +904,20 @@ namespace BlockMaster
             TargetShape = null;
             line.MouseDown += OnLineClick;
 
+            Label lab = new Label();
+            lab.Content = CurrentCondition.TakeGLineFromCondition(Id.Substring(1)).Line.Title;
+
+            lab.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+            Size s = lab.DesiredSize;
+
+            Point centerl = new Point((line.X1 + line.X2) / 2, (line.Y1 + line.Y2) / 2);
+            /*Canvas.SetLeft(lab, Canvas.GetLeft(CurrentShape));
+            Canvas.SetTop(lab, Canvas.GetTop(CurrentShape) + (Canvas.GetBottom(CurrentShape)-Canvas.GetTop(CurrentShape))/4.0);*/
+            Canvas.SetLeft(lab, centerl.X - s.Width / 2);
+            Canvas.SetTop(lab, centerl.Y - s.Height / 2);
+            lab.Foreground = Brushes.OrangeRed;
+            MainCanvas.Children.Add(lab);
+
         }
 
         public void DrawSelectedBorder(string SelectedName, int SelectedType)
@@ -961,12 +991,24 @@ namespace BlockMaster
         {
             if (TitleBox.IsFocused)
             {
-                GBox CurrentGBox = CurrentCondition.TakeGBoxFromCondition(CurrentShape.Name.Substring(1));
-                CurrentGBox.Element.Title = TitleBox.Text;
-                MainCanvas.Children.Clear();
-                MainCanvas.Children.Add(SelectedBorder);
-                MainCanvas.Children.Add(StretchController);
-                DrawCondition();
+                if (CurrentShape.Name[0] == 'S')
+                {
+                    GBox CurrentGBox = CurrentCondition.TakeGBoxFromCondition(CurrentShape.Name.Substring(1));
+                    CurrentGBox.Element.Title = TitleBox.Text;
+                    /*MainCanvas.Children.Clear();
+                    MainCanvas.Children.Add(SelectedBorder);
+                    MainCanvas.Children.Add(StretchController);
+                    DrawCondition();*/
+                }
+                else
+                {
+                    GLine CurrentGLine = CurrentCondition.TakeGLineFromCondition(CurrentShape.Name.Substring(1));
+                    CurrentGLine.SetTitle(TitleBox.Text);
+                    /*MainCanvas.Children.Clear();
+                    MainCanvas.Children.Add(SelectedBorder);
+                    MainCanvas.Children.Add(StretchController);
+                    DrawCondition();*/
+                }
             }
         }
 
@@ -1003,9 +1045,60 @@ namespace BlockMaster
             WidthBox.Text = "Линия";
             SelectedBorder.Visibility = Visibility.Hidden;
 
+            TitleBox.Text = CurrentCondition.TakeGLineFromCondition(L.Name.Substring(1)).Line.Title;
+            CommentBox.Text = CurrentCondition.TakeGLineFromCondition(L.Name.Substring(1)).Line.Comment;
             LineSelected = true;
 
             CurrentShape.Stroke = Brushes.Blue;
+        }
+
+        private void Button_LostFocus_1(object sender, RoutedEventArgs e)
+        {
+           /* MainCanvas.Children.Clear();
+            MainCanvas.Children.Add(SelectedBorder);
+            MainCanvas.Children.Add(StretchController);
+            DrawCondition();*/
+        }
+
+        private void TitleBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            MainCanvas.Children.Clear();
+            MainCanvas.Children.Add(SelectedBorder);
+            MainCanvas.Children.Add(StretchController);
+            DrawCondition();
+        }
+
+        private void CommentBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (CommentBox.IsFocused)
+            {
+                if (CurrentShape.Name[0] == 'S')
+                {
+                    GBox CurrentGBox = CurrentCondition.TakeGBoxFromCondition(CurrentShape.Name.Substring(1));
+                    CurrentGBox.Element.Comment = CommentBox.Text;
+                   /* MainCanvas.Children.Clear();
+                    MainCanvas.Children.Add(SelectedBorder);
+                    MainCanvas.Children.Add(StretchController);
+                    DrawCondition();*/
+                }
+                else
+                {
+                    GLine CurrentGLine = CurrentCondition.TakeGLineFromCondition(CurrentShape.Name.Substring(1));
+                    CurrentGLine.Line.Comment=CommentBox.Text;
+                    /*MainCanvas.Children.Clear();
+                    MainCanvas.Children.Add(SelectedBorder);
+                    MainCanvas.Children.Add(StretchController);
+                    DrawCondition();*/
+                }
+            }
+        }
+
+        private void CommentBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            MainCanvas.Children.Clear();
+            MainCanvas.Children.Add(SelectedBorder);
+            MainCanvas.Children.Add(StretchController);
+            DrawCondition();
         }
 
     }
