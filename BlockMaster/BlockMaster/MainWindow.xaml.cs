@@ -48,6 +48,8 @@ namespace BlockMaster
 
         Rectangle StretchController = new Rectangle();
 
+        bool LineSelected = false;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -62,6 +64,8 @@ namespace BlockMaster
             StretchController.Height = 8;
             StretchController.Width = 8;
             StretchController.MouseDown +=StretchController_MouseDown;
+
+            
 
             //++ksu
             CurrentStateStore = new StateStore();
@@ -91,6 +95,11 @@ namespace BlockMaster
                 {
                     SelectedBorder.Visibility = Visibility.Hidden;
                     StretchController.Visibility = Visibility.Hidden;
+                }
+                else if(LineSelected)
+                {
+                    CurrentShape.Stroke = Brushes.Black;
+                    LineSelected = false;
                 }
                 else
                 {
@@ -264,18 +273,18 @@ namespace BlockMaster
         {
             if (drawing)
             {
-                /*Label lab = new Label();
-                lab.Content = "Meow";
+                Label lab = new Label();
+                lab.Content = "Элемент";
 
                 lab.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
                 Size s = lab.DesiredSize;
 
-                Point center = CurrentShape.TransformToAncestor(MainCanvas).Transform(new Point(CurrentShape.ActualWidth / 2, CurrentShape.ActualHeight / 2));*/
+                Point center = CurrentShape.TransformToAncestor(MainCanvas).Transform(new Point(CurrentShape.ActualWidth / 2, CurrentShape.ActualHeight / 2));
                 /*Canvas.SetLeft(lab, Canvas.GetLeft(CurrentShape));
                 Canvas.SetTop(lab, Canvas.GetTop(CurrentShape) + (Canvas.GetBottom(CurrentShape)-Canvas.GetTop(CurrentShape))/4.0);*/
-                /*Canvas.SetLeft(lab, center.X-s.Width/2);
+                Canvas.SetLeft(lab, center.X-s.Width/2);
                 Canvas.SetTop(lab, center.Y-s.Height/2);
-                MainCanvas.Children.Add(lab);*/
+                MainCanvas.Children.Add(lab);
                 
                 //CurrentShape.AddHandler(Shape.MouseDownEvent, new RoutedEventHandler(this.OnShapeClick));
 
@@ -289,8 +298,9 @@ namespace BlockMaster
                 //lab.MouseDown += new MouseButtonEventHandler(OnShapeClick);
 
                 //++ksu
-                CurrentShape.Name = "S" + CurrentCondition.AmountOfelements.ToString(); // здесь нужно генерировать идентификатор
-                GBox NewShape = new GBox(CurrentShape, "Текст", " ", ShapeType);
+                string id = Guid.NewGuid().ToString().Replace('-', '_');
+                CurrentShape.Name = "S" + id; // здесь нужно генерировать идентификатор
+                GBox NewShape = new GBox(CurrentShape, (string)lab.Content, " ", ShapeType);
 
                 if (ShapeType == 4) CurrentShape.RenderTransform = new RotateTransform(45);
 
@@ -356,6 +366,10 @@ namespace BlockMaster
                 //++ksu
                 ChangeSizeAndPosition();
                 //--ksu
+                MainCanvas.Children.Clear();
+                MainCanvas.Children.Add(SelectedBorder);
+                MainCanvas.Children.Add(StretchController);
+                DrawCondition();
             }
         }
 
@@ -508,17 +522,19 @@ namespace BlockMaster
                 line.Y1 = currentOptimal.Y;
                 line.Y2 = targetOptimal.Y;
 
-                MainCanvas.Children.Add(line);
+                MainCanvas.Children.Add(line); 
                 TargetShape = null;
                 ShapeType = 2;
-
+                string id = Guid.NewGuid().ToString().Replace('-', '_');
+                line.Name = "L" + id;
                 //Sticky
                 Condition NewCondition = new Condition(CurrentCondition);
                 GLine gLine = new GLine(CurrentName, TargetName, line.Name);
-                NewCondition.AddConnection(CurrentName.Substring(1), TargetName.Substring(1), gLine, line.Name);
+                NewCondition.AddConnection(CurrentName.Substring(1), TargetName.Substring(1), gLine, line.Name.Substring(1));
                 CurrentStateStore.AddConditionInStore(CurrentCondition);
                 CurrentCondition = NewCondition;
                 //--Sticky
+                line.MouseDown += OnLineClick;
                 
             }
            
@@ -539,6 +555,9 @@ namespace BlockMaster
             //MessageBox.Show("Purr");
             CurrentShape = (Shape)e.Source;
             DrawSelectedBorder(CurrentShape.Name, CurrentCondition.TakeGBoxFromCondition(CurrentShape.Name.Substring(1)).Element.Type);
+
+            TitleBox.Text = CurrentCondition.TakeGBoxFromCondition(CurrentShape.Name.Substring(1)).Element.Title;
+
            /* 
             if (CurrentShape.Name != "Poly")
             {
@@ -651,6 +670,10 @@ namespace BlockMaster
 
                 DrawLink(StartID, EndID, LinkID, 0);
             }
+            /*CurrentShape = null;
+            TargetShape = null;
+            SelectedBorder.Visibility = Visibility.Hidden;
+            StretchController.Visibility = Visibility.Hidden;*/
         }
 
         public void DrawShape(GBox gBox, string ID)
@@ -689,6 +712,22 @@ namespace BlockMaster
             
             RegisterName(CurrentShape.Name, CurrentShape);
             if (gBox.Element.Type == 4) CurrentShape.RenderTransform = new RotateTransform(45);
+
+            MainCanvas.UpdateLayout();
+
+            Label lab = new Label();
+            lab.Content = gBox.Element.Title;
+
+            lab.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+            Size s = lab.DesiredSize;
+
+            Point center = CurrentShape.TransformToAncestor(MainCanvas).Transform(new Point(CurrentShape.ActualWidth / 2, CurrentShape.ActualHeight / 2));
+            /*Canvas.SetLeft(lab, Canvas.GetLeft(CurrentShape));
+            Canvas.SetTop(lab, Canvas.GetTop(CurrentShape) + (Canvas.GetBottom(CurrentShape)-Canvas.GetTop(CurrentShape))/4.0);*/
+            Canvas.SetLeft(lab, center.X - s.Width / 2);
+            Canvas.SetTop(lab, center.Y - s.Height / 2);
+            MainCanvas.Children.Add(lab);
+
         }
 
         public void DrawLink(string StartID, string EndID, string Id, int TargetType)
@@ -846,7 +885,8 @@ namespace BlockMaster
             line.Y2 = targetOptimal.Y;
 
             MainCanvas.Children.Add(line);
-            TargetShape = null;           
+            TargetShape = null;
+            line.MouseDown += OnLineClick;
 
         }
 
@@ -915,6 +955,57 @@ namespace BlockMaster
             MainCanvas.Children.Add(SelectedBorder);
             MainCanvas.Children.Add(StretchController);
             DrawCondition();
+        }
+
+        private void TitleBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (TitleBox.IsFocused)
+            {
+                GBox CurrentGBox = CurrentCondition.TakeGBoxFromCondition(CurrentShape.Name.Substring(1));
+                CurrentGBox.Element.Title = TitleBox.Text;
+                MainCanvas.Children.Clear();
+                MainCanvas.Children.Add(SelectedBorder);
+                MainCanvas.Children.Add(StretchController);
+                DrawCondition();
+            }
+        }
+
+        private void Button_Click_5(object sender, RoutedEventArgs e)
+        {
+            
+            //STACK
+
+            Condition NewCondition = new Condition(CurrentCondition);
+            if (CurrentShape.Name[0] != 'L')
+            {
+                NewCondition.DeleteElementFromCondition(CurrentCondition.TakeGBoxFromCondition(CurrentShape.Name.Substring(1)));
+            }
+            else
+            {
+                NewCondition.DeleteLineFromCondition(NewCondition.TakeGLineFromCondition(CurrentShape.Name.Substring(1)));
+            }
+            CurrentStateStore.AddConditionInStore(CurrentCondition);
+            CurrentCondition = NewCondition;
+
+            
+            MainCanvas.Children.Clear();
+            MainCanvas.Children.Add(SelectedBorder);
+            MainCanvas.Children.Add(StretchController);
+            DrawCondition();
+
+        }
+
+        private void OnLineClick(object sender, MouseButtonEventArgs e)
+        {
+            action = true;
+            CurrentShape = (Line)e.Source;
+            Line L = (Line)e.Source;
+            WidthBox.Text = "Линия";
+            SelectedBorder.Visibility = Visibility.Hidden;
+
+            LineSelected = true;
+
+            CurrentShape.Stroke = Brushes.Blue;
         }
 
     }
