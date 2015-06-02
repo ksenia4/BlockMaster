@@ -584,43 +584,7 @@ namespace BlockMaster
 
             TitleBox.Text = CurrentCondition.TakeGBoxFromCondition(CurrentShape.Name.Substring(1)).Element.Title;
             CommentBox.Text = CurrentCondition.TakeGBoxFromCondition(CurrentShape.Name.Substring(1)).Element.Comment;
-           /* 
-            if (CurrentShape.Name != "Poly")
-            {
-                SelectedBorder.StrokeThickness = 1;
-                SelectedBorder.Stroke = Brushes.Black;
-                Canvas.SetLeft(SelectedBorder, Canvas.GetLeft(CurrentShape));
-                Canvas.SetTop(SelectedBorder, Canvas.GetTop(CurrentShape));
-                SelectedBorder.Height = CurrentShape.Height;
-                SelectedBorder.Width = CurrentShape.Width;
-
-                StretchController.Visibility = Visibility.Visible;
-                Canvas.SetLeft(StretchController, Canvas.GetLeft(CurrentShape) + CurrentShape.ActualWidth - 4);
-                Canvas.SetTop(StretchController, Canvas.GetTop(CurrentShape) + CurrentShape.ActualHeight - 4);
-
-                HeightBox.Text = CurrentShape.Height.ToString();
-                WidthBox.Text = CurrentShape.Width.ToString();
-            }
-            else
-            {
-                SelectedBorder.StrokeThickness = 1;
-                SelectedBorder.Stroke = Brushes.Black;
-                double diagonal = Math.Sqrt(Math.Pow(CurrentShape.ActualWidth, 2) + Math.Pow(CurrentShape.ActualHeight, 2));
-
-                Point center = CurrentShape.TransformToAncestor(MainCanvas).Transform(new Point(CurrentShape.ActualWidth / 2, CurrentShape.ActualHeight / 2));
-
-                Canvas.SetLeft(SelectedBorder, center.X-diagonal/2);
-                Canvas.SetTop(SelectedBorder, center.Y - diagonal / 2);
-                SelectedBorder.Height = diagonal;
-                SelectedBorder.Width = diagonal;
-
-                StretchController.Visibility = Visibility.Visible;
-                Canvas.SetLeft(StretchController, Canvas.GetLeft(SelectedBorder) + diagonal);
-                Canvas.SetTop(StretchController, Canvas.GetTop(SelectedBorder) + diagonal);
-
-                HeightBox.Text = CurrentShape.Height.ToString();
-                WidthBox.Text = CurrentShape.Width.ToString();
-            }*/
+           
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
@@ -1119,6 +1083,7 @@ namespace BlockMaster
 
         private void MenuItem_Click_3(object sender, RoutedEventArgs e)
         {
+            CurrentCondition.CheckMatrix();
             Stream myStream;
             SaveFileDialog saveFileDialog1 = new SaveFileDialog();
 
@@ -1212,13 +1177,178 @@ namespace BlockMaster
         private void Label_Click(object sender, RoutedEventArgs e)
         {
             System.Windows.Controls.Label L = (System.Windows.Controls.Label)e.Source;
-                Shape S = (Shape)MainCanvas.FindName(L.Tag.ToString());
-                CurrentShape = S;
-                S.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left)
+            Shape S = (Shape)MainCanvas.FindName(L.Tag.ToString());
+            action = true;
+            if (S.Name[0] == 'S')
+            {
+                if (ShapeType == 3)
                 {
-                    RoutedEvent = Mouse.MouseDownEvent,
-                    Source = S,
-                });
+                    TargetShape = S;
+                    string CurrentName = CurrentShape.Name;
+                    string TargetName = TargetShape.Name;
+                    CurrentShape.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+                    TargetShape.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+                    double tWidth = TargetShape.DesiredSize.Width;
+                    double tHeight = TargetShape.DesiredSize.Height;
+                    if (CurrentCondition.TakeGBoxFromCondition(CurrentShape.Name.Substring(1)).Element.Type == 4)
+                    {
+                        CurrentShape = SelectedBorder;
+                    }
+                    Point targetCenter =
+                        TargetShape.TransformToAncestor(MainCanvas).Transform(new Point(TargetShape.DesiredSize.Width / 2, TargetShape.DesiredSize.Height / 2));
+                    if (CurrentCondition.TakeGBoxFromCondition(TargetShape.Name.Substring(1)).Element.Type == 4)
+                    {
+                        Rectangle HitBox = new Rectangle();
+                        MainCanvas.Children.Add(HitBox);
+                        double diagonal = Math.Sqrt(Math.Pow(TargetShape.DesiredSize.Width, 2) + Math.Pow(TargetShape.DesiredSize.Height, 2));
+                        Point center = TargetShape.TransformToAncestor(MainCanvas).Transform(new Point(TargetShape.DesiredSize.Width / 2, TargetShape.DesiredSize.Height / 2));
+                        Canvas.SetLeft(HitBox, center.X - diagonal / 2);
+                        Canvas.SetTop(HitBox, center.Y - diagonal / 2);
+                        HitBox.Height = diagonal;
+                        HitBox.Width = diagonal;
+                        TargetShape = HitBox;
+                        targetCenter.X = Canvas.GetLeft(TargetShape) + diagonal / 2;
+                        targetCenter.Y = Canvas.GetTop(TargetShape) + diagonal / 2;
+                        tWidth = diagonal;
+                        tHeight = diagonal;
+                    }
+
+                    Point currentCenter =
+                        CurrentShape.TransformToAncestor(MainCanvas).Transform(new Point(CurrentShape.DesiredSize.Width / 2, CurrentShape.DesiredSize.Height / 2));
+
+
+                    double distance;
+                    double optimalDistance;
+                    Point candidate;
+                    Point currentOptimal;
+                    Point targetOptimal;
+
+
+
+                    candidate = currentCenter; candidate.Y += CurrentShape.DesiredSize.Height / 2;
+                    optimalDistance = GetDistanceBetweenPoints(candidate, targetCenter);
+                    currentOptimal = candidate;
+
+                    candidate = currentCenter; candidate.Y -= CurrentShape.DesiredSize.Height / 2;
+                    distance = GetDistanceBetweenPoints(candidate, targetCenter);
+                    if (distance < optimalDistance)
+                    {
+                        currentOptimal = candidate;
+                        optimalDistance = distance;
+                    }
+
+                    candidate = currentCenter; candidate.X += CurrentShape.DesiredSize.Width / 2;
+                    distance = GetDistanceBetweenPoints(candidate, targetCenter);
+                    if (distance < optimalDistance)
+                    {
+                        currentOptimal = candidate;
+                        optimalDistance = distance;
+                    }
+
+                    candidate = currentCenter; candidate.X -= CurrentShape.DesiredSize.Width / 2;
+                    distance = GetDistanceBetweenPoints(candidate, targetCenter);
+                    if (distance < optimalDistance)
+                    {
+                        currentOptimal = candidate;
+                        optimalDistance = distance;
+                    }
+
+                    //now for targeted shape
+
+                    candidate = targetCenter; candidate.Y += tHeight / 2;
+                    optimalDistance = GetDistanceBetweenPoints(candidate, currentOptimal);
+                    targetOptimal = candidate;
+
+                    candidate = targetCenter; candidate.Y -= tHeight / 2;
+                    distance = GetDistanceBetweenPoints(candidate, currentOptimal);
+                    if (distance < optimalDistance)
+                    {
+                        targetOptimal = candidate;
+                        optimalDistance = distance;
+                    }
+
+                    candidate = targetCenter; candidate.X += tWidth / 2;
+                    distance = GetDistanceBetweenPoints(candidate, currentOptimal);
+                    if (distance < optimalDistance)
+                    {
+                        targetOptimal = candidate;
+                        optimalDistance = distance;
+                    }
+
+                    candidate = targetCenter; candidate.X -= tWidth / 2;
+                    distance = GetDistanceBetweenPoints(candidate, currentOptimal);
+                    if (distance < optimalDistance)
+                    {
+                        targetOptimal = candidate;
+                        optimalDistance = distance;
+                    }
+
+                    ArrowLine line = new ArrowLine();
+                    line.Name = "L" + CurrentCondition.AmountOfelements.ToString();
+                    line.Visibility = System.Windows.Visibility.Visible;
+                    line.StrokeThickness = 2;
+                    line.Stroke = System.Windows.Media.Brushes.Black;
+                    line.X1 = currentOptimal.X;
+                    line.X2 = targetOptimal.X;
+                    line.Y1 = currentOptimal.Y;
+                    line.Y2 = targetOptimal.Y;
+
+
+
+                    MainCanvas.Children.Add(line);
+                    TargetShape = null;
+                    ShapeType = 2;
+                    string id = Guid.NewGuid().ToString().Replace('-', '_');
+                    line.Name = "L" + id;
+                    //Sticky
+                    Condition NewCondition = new Condition(CurrentCondition);
+                    GLine gLine = new GLine(CurrentName, TargetName, line.Name);
+                    gLine.SetTitle("Связь");
+
+                    System.Windows.Controls.Label lab = new System.Windows.Controls.Label();
+                    lab.Content = gLine.Line.Title;
+
+                    lab.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+                    Size s = lab.DesiredSize;
+
+                    Point centerl = new Point((line.X1 + line.X2) / 2, (line.Y1 + line.Y2) / 2);
+                    /*Canvas.SetLeft(lab, Canvas.GetLeft(CurrentShape));
+                    Canvas.SetTop(lab, Canvas.GetTop(CurrentShape) + (Canvas.GetBottom(CurrentShape)-Canvas.GetTop(CurrentShape))/4.0);*/
+                    Canvas.SetLeft(lab, centerl.X - s.Width / 2);
+                    Canvas.SetTop(lab, centerl.Y - s.Height / 2);
+                    lab.Foreground = Brushes.DarkGreen;
+                    lab.Tag = line.Name;
+                    lab.MouseDown += new MouseButtonEventHandler(Label_Click);
+                    MainCanvas.Children.Add(lab);
+
+                    NewCondition.AddConnection(CurrentName.Substring(1), TargetName.Substring(1), gLine, line.Name.Substring(1));
+                    CurrentStateStore.AddConditionInStore(CurrentCondition);
+                    CurrentCondition = NewCondition;
+                    //--Sticky
+                    line.MouseDown += OnLineClick;
+
+                }
+
+                else if (ShapeType == 2)
+                {
+                    ShapeType = 3;
+                }
+
+                if (CurrentShape.Name == S.Name)
+                {
+                    moving = true;
+                    StartPosition = Mouse.GetPosition(MainCanvas);
+                }
+                SelectedBorder.Visibility = Visibility.Visible;
+
+                //MessageBox.Show("Purr");
+                CurrentShape = S;
+                DrawSelectedBorder(CurrentShape.Name, CurrentCondition.TakeGBoxFromCondition(CurrentShape.Name.Substring(1)).Element.Type);
+
+                TitleBox.Text = CurrentCondition.TakeGBoxFromCondition(CurrentShape.Name.Substring(1)).Element.Title;
+                CommentBox.Text = CurrentCondition.TakeGBoxFromCondition(CurrentShape.Name.Substring(1)).Element.Comment;
+
+            }
         }
 
     }
