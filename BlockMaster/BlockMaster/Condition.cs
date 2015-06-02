@@ -150,6 +150,38 @@ namespace BlockMaster
             return LineIDs[ID];
         }
 
-        
+        public bool CheckMatrix()
+        {
+            string StartId = "";
+            string EndId = "";
+            int CountOfstart = 0;
+            int CountOfEnd = 0;
+            string ErrorText;
+
+            foreach (KeyValuePair<string, GBox> Element in BoxIDs)
+            {
+                if (Element.Value.Element.StartPosition) { StartId = Element.Key; CountOfstart++; }
+                if (Element.Value.Element.EndPosition) { EndId = Element.Key; CountOfEnd++; }
+            }
+            if ((CountOfstart > 1) || (CountOfstart == 0)) { ErrorText = "Задано неправильное количество начальных состояний."; return false; }
+            if ((CountOfEnd > 1) || (CountOfEnd == 0)) { ErrorText = "Задано неправильное количество конечных состояний."; return false; }
+            
+            List<List<string>> CondMatrixDop = new List<List<string>>(CondMatrix);
+
+            int FIndex = IDsForMatrix[StartId];
+            int LIndex = IDsForMatrix[EndId];
+            int CurrentIndex = FIndex;
+            int Counter = 0;
+            //while ((CurrentIndex!=LIndex)||(Counter>=AmountOfelements))
+            //{
+            //    for (int j = 0; j < AmountOfelements; j++)
+            //    {
+            //        if (CondMatrix[CurrentIndex][j] != "") CondMatrix[i][j] = "";
+            //    }
+            //    Counter++;
+            //}
+
+            return true;
+        }
     }
 }
