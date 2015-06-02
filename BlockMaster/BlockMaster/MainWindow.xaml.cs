@@ -1086,32 +1086,38 @@ namespace BlockMaster
 
         private void MenuItem_Click_3(object sender, RoutedEventArgs e)
         {
-            CurrentCondition.CheckMatrix();
-            Stream myStream;
-            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-
-            saveFileDialog1.Filter = "xml files (*.xml)|*.xml|All files (*.*)|*.*";
-            saveFileDialog1.FilterIndex = 1;
-            saveFileDialog1.RestoreDirectory = true;
-            saveFileDialog1.ShowDialog();
-
-            if (saveFileDialog1.FileName != "")
+            if (CurrentCondition.CheckMatrix())
             {
-                if ((myStream = saveFileDialog1.OpenFile()) != null)
+                Stream myStream;
+                SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+
+                saveFileDialog1.Filter = "xml files (*.xml)|*.xml|All files (*.*)|*.*";
+                saveFileDialog1.FilterIndex = 1;
+                saveFileDialog1.RestoreDirectory = true;
+                saveFileDialog1.ShowDialog();
+
+                if (saveFileDialog1.FileName != "")
                 {
-                    // Code to write the stream goes here.
-                    string FileName = saveFileDialog1.FileName;
-            
-                    XmlSerializer Serializer = new XmlSerializer(typeof(Condition));
+                    if ((myStream = saveFileDialog1.OpenFile()) != null)
+                    {
+                        // Code to write the stream goes here.
+                        myStream.Close();
+                        string FileName = saveFileDialog1.FileName;
 
-                    TextWriter writer = new StreamWriter(FileName);
+                        XmlSerializer Serializer = new XmlSerializer(typeof(Condition));
 
-                    Serializer.Serialize(writer, CurrentCondition);
-                    writer.Close();
-                    myStream.Close();
+                        TextWriter writer = new StreamWriter(FileName);
+
+                        Serializer.Serialize(writer, CurrentCondition);
+                        writer.Close();
+                        
+                    }
                 }
             }
-
+            else
+            {
+                System.Windows.MessageBox.Show("Ошибка при построении блок-схемы");
+            }
             
         }
 
