@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace BlockMaster
 {
-    class Link
+    [Serializable]
+    public class Link
     {
         public string ID;
 

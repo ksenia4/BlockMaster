@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace BlockMaster
 {
+    [Serializable]
     public class Box
     {
         public string ID;

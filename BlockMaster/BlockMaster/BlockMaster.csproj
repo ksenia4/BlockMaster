@@ -51,6 +51,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -68,9 +69,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ArrowEnds.cs" />
+    <Compile Include="ArrowLine.cs" />
+    <Compile Include="ArrowLineBase.cs" />
     <Compile Include="GBox.cs" />
     <Compile Include="GLine.cs" />
     <Compile Include="IBlockSheme.cs" />
+    <Compile Include="SerializableDictionary.cs" />
     <Compile Include="StateStore.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -132,6 +137,44 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Ellips-256.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\ellips.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Rectangle.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\diamond.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\straight-lines-6.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Open-256.png" />
+    <Resource Include="Resources\save-128.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Log Out.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Arrow-return-up-left-48.png" />
+    <Resource Include="Resources\Arrow-return-up-right-48.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\block-diagram-visio-hierarchy-clip-art-13844.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Delete-icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\textura_kletka8.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\0_6868d_cc934b15_orig.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

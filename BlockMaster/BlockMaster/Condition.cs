@@ -6,14 +6,15 @@ using System.Threading.Tasks;
 
 namespace BlockMaster
 {
-    class Condition
+    [Serializable()]
+    public class Condition
     {
-        public Dictionary<string, GBox> BoxIDs;
-        public Dictionary<string, GLine> LineIDs;
+        public SerializableDictionary<string, GBox> BoxIDs;
+        public SerializableDictionary<string, GLine> LineIDs;
 
-        Dictionary<string, int> IDsForMatrix;
+        public SerializableDictionary<string, int> IDsForMatrix;
 
-        List<List<string>> CondMatrix;
+        public List<List<string>> CondMatrix;
         public int AmountOfelements;
         public int AmountOfLines;
 
@@ -21,9 +22,9 @@ namespace BlockMaster
         {
             AmountOfelements = 0;
             AmountOfLines = 0;
-            BoxIDs = new  Dictionary<string, GBox>();
-            LineIDs = new Dictionary<string, GLine>();
-            IDsForMatrix = new Dictionary<string, int>();
+            BoxIDs = new SerializableDictionary<string, GBox>();
+            LineIDs = new SerializableDictionary<string, GLine>();
+            IDsForMatrix = new SerializableDictionary<string, int>();
             CondMatrix = new  List<List<string>>(0);
         }
 
@@ -32,9 +33,9 @@ namespace BlockMaster
             AmountOfelements = CurrentCondition.AmountOfelements;
             AmountOfLines = CurrentCondition.AmountOfLines;
 
-            BoxIDs = new Dictionary<string, GBox>();
-            LineIDs = new Dictionary<string, GLine>();
-            IDsForMatrix = new Dictionary<string, int>();
+            BoxIDs = new SerializableDictionary<string, GBox>();
+            LineIDs = new SerializableDictionary<string, GLine>();
+            IDsForMatrix = new SerializableDictionary<string, int>();
             CondMatrix = new List<List<string>>(CurrentCondition.CondMatrix);
 
             foreach (KeyValuePair<string, GBox> Element in CurrentCondition.BoxIDs)

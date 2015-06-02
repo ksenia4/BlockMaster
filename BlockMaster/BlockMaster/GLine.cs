@@ -5,13 +5,17 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Shapes;
 using System.Windows.Controls;
+using System.Xml.Serialization;
 
 namespace BlockMaster
 {
-    class GLine : IBlockSheme
+    [Serializable]
+    public class GLine : IBlockSheme
     {
-        private Shape[] GrLine;
-        private Label GComment;
+        [XmlIgnore]
+        public Shape[] GrLine;
+        [XmlIgnore]
+        public Label GComment;
         public Link Line;
 
         GLine()

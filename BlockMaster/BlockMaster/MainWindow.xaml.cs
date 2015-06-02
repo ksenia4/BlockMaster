@@ -12,6 +12,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Xml.Serialization;
+using System.IO;
+using System.Windows.Forms;
+using Petzold.Media2D;
 
 namespace BlockMaster
 {
@@ -65,13 +69,12 @@ namespace BlockMaster
             StretchController.Width = 8;
             StretchController.MouseDown +=StretchController_MouseDown;
 
-            
-
             //++ksu
             CurrentStateStore = new StateStore();
             CurrentCondition = new Condition();
             //--ksu
 
+      
         }
 
         public double GetDistanceBetweenPoints(Point p, Point q)
@@ -149,7 +152,7 @@ namespace BlockMaster
             action = false;
         }
 
-        private void MainCanvas_MouseMove(object sender, MouseEventArgs e)
+        private void MainCanvas_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
         {
             if ( drawing)
             {
@@ -273,7 +276,7 @@ namespace BlockMaster
         {
             if (drawing)
             {
-                Label lab = new Label();
+                System.Windows.Controls.Label lab = new System.Windows.Controls.Label();
                 lab.Content = "Элемент";
 
                 lab.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
@@ -512,7 +515,7 @@ namespace BlockMaster
                 R1.Width = 5;
                 MainCanvas.Children.Add(R1);*/
 
-                System.Windows.Shapes.Line line = new System.Windows.Shapes.Line();
+                ArrowLine line = new ArrowLine();
                 line.Name = "L" + CurrentCondition.AmountOfelements.ToString();
                 line.Visibility = System.Windows.Visibility.Visible;
                 line.StrokeThickness = 2;
@@ -532,7 +535,7 @@ namespace BlockMaster
                 GLine gLine = new GLine(CurrentName, TargetName, line.Name);
                 gLine.SetTitle("Связь");
 
-                Label lab = new Label();
+                System.Windows.Controls.Label lab = new System.Windows.Controls.Label();
                 lab.Content = gLine.Line.Title;
 
                 lab.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
@@ -721,7 +724,8 @@ namespace BlockMaster
                 Canvas.SetLeft(CurrentShape, gBox.Element.Left);
                 Canvas.SetTop(CurrentShape, gBox.Element.Top);
                 CurrentShape.MouseDown += new MouseButtonEventHandler(OnShapeClick);
-                MainCanvas.UnregisterName(CurrentShape.Name);
+                try { MainCanvas.UnregisterName(CurrentShape.Name); }
+                catch { };
                 
                 CurrentShape.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
                 //CurrentShape.Arrange(new Rect(0, 0, CurrentShape.DesiredWidth, CurrentShape.DesiredHeight));
@@ -731,7 +735,7 @@ namespace BlockMaster
 
             MainCanvas.UpdateLayout();
 
-            Label lab = new Label();
+            System.Windows.Controls.Label lab = new System.Windows.Controls.Label();
             lab.Content = gBox.Element.Title;
 
             lab.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
@@ -890,7 +894,7 @@ namespace BlockMaster
 
 
 
-            System.Windows.Shapes.Line line = new System.Windows.Shapes.Line();
+            ArrowLine line = new ArrowLine();
             line.Name = Id;
             line.Visibility = System.Windows.Visibility.Visible;
             line.StrokeThickness = 2;
@@ -904,7 +908,7 @@ namespace BlockMaster
             TargetShape = null;
             line.MouseDown += OnLineClick;
 
-            Label lab = new Label();
+            System.Windows.Controls.Label lab = new System.Windows.Controls.Label();
             lab.Content = CurrentCondition.TakeGLineFromCondition(Id.Substring(1)).Line.Title;
 
             lab.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
@@ -971,7 +975,7 @@ namespace BlockMaster
 
         private void MenuItem_Click_1(object sender, RoutedEventArgs e)
         {
-            CurrentCondition = CurrentStateStore.TakeConditionFromStore();
+            CurrentCondition = CurrentStateStore.TakeConditionFromStore(CurrentCondition);
             MainCanvas.Children.Clear();
             MainCanvas.Children.Add(SelectedBorder);
             MainCanvas.Children.Add(StretchController);
@@ -980,7 +984,7 @@ namespace BlockMaster
 
         private void MenuItem_Click_2(object sender, RoutedEventArgs e)
         {
-            CurrentCondition = CurrentStateStore.TakeConditionFromDopStore();
+            CurrentCondition = CurrentStateStore.TakeConditionFromDopStore(CurrentCondition);
             MainCanvas.Children.Clear();
             MainCanvas.Children.Add(SelectedBorder);
             MainCanvas.Children.Add(StretchController);
@@ -1040,8 +1044,8 @@ namespace BlockMaster
         private void OnLineClick(object sender, MouseButtonEventArgs e)
         {
             action = true;
-            CurrentShape = (Line)e.Source;
-            Line L = (Line)e.Source;
+            CurrentShape = (ArrowLine)e.Source;
+            ArrowLine L = (ArrowLine)e.Source;
             WidthBox.Text = "Линия";
             SelectedBorder.Visibility = Visibility.Hidden;
 
@@ -1100,6 +1104,100 @@ namespace BlockMaster
             MainCanvas.Children.Add(StretchController);
             DrawCondition();
         }
+
+        private void MenuItem_Click_3(object sender, RoutedEventArgs e)
+        {
+            Stream myStream;
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+
+            saveFileDialog1.Filter = "xml files (*.xml)|*.xml|All files (*.*)|*.*";
+            saveFileDialog1.FilterIndex = 1;
+            saveFileDialog1.RestoreDirectory = true;
+            saveFileDialog1.ShowDialog();
+
+            if (saveFileDialog1.FileName != "")
+            {
+                if ((myStream = saveFileDialog1.OpenFile()) != null)
+                {
+                    // Code to write the stream goes here.
+                    string FileName = saveFileDialog1.FileName;
+            
+                    XmlSerializer Serializer = new XmlSerializer(typeof(Condition));
+
+                    TextWriter writer = new StreamWriter(FileName);
+
+                    Serializer.Serialize(writer, CurrentCondition);
+                    writer.Close();
+                    myStream.Close();
+                }
+            }
+
+            
+        }
+
+        private void MenuItem_Click_4(object sender, RoutedEventArgs e)
+        {
+            XmlSerializer Serializer = new XmlSerializer(typeof(Condition));
+            
+            Stream myStream = null;
+            OpenFileDialog openFileDialog1 = new OpenFileDialog();
+
+            openFileDialog1.InitialDirectory = "c:\\";
+            openFileDialog1.Filter = "xml files (*.xml)|*.xml|All files (*.*)|*.*";
+            openFileDialog1.FilterIndex = 1;
+            openFileDialog1.RestoreDirectory = true;
+            openFileDialog1.ShowDialog();
+            if (openFileDialog1.FileName != "")
+            {
+                try
+                {
+                    if ((myStream = openFileDialog1.OpenFile()) != null)
+                    {
+                        using (myStream)
+                        {
+                            CurrentCondition = (Condition)Serializer.Deserialize(myStream);
+                            MainCanvas.Children.Clear();
+                            MainCanvas.Children.Add(SelectedBorder);
+                            MainCanvas.Children.Add(StretchController);
+                            DrawCondition();
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Windows.Forms.MessageBox.Show("Error: Could not read file from disk. Original error: " + ex.Message);
+                }
+            }
+        }
+
+        private void MenuItem_Click_5(object sender, RoutedEventArgs e)
+        {
+            Condition NewCondition = new Condition(CurrentCondition);
+            if (CurrentShape.Name[0] != 'L')
+            {
+                NewCondition.DeleteElementFromCondition(CurrentCondition.TakeGBoxFromCondition(CurrentShape.Name.Substring(1)));
+            }
+            else
+            {
+                NewCondition.DeleteLineFromCondition(NewCondition.TakeGLineFromCondition(CurrentShape.Name.Substring(1)));
+            }
+            CurrentStateStore.AddConditionInStore(CurrentCondition);
+            CurrentCondition = NewCondition;
+
+
+            MainCanvas.Children.Clear();
+            MainCanvas.Children.Add(SelectedBorder);
+            MainCanvas.Children.Add(StretchController);
+            DrawCondition();
+        }
+
+        private void MenuItem_Click_6(object sender, RoutedEventArgs e)
+        {
+            MenuItem_Click_3(null, null);
+            this.Close();
+        }
+
+        
 
     }
 }

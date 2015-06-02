@@ -5,12 +5,16 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Shapes;
 using System.Windows.Controls;
+using System.Xml.Serialization;
+
 namespace BlockMaster
 {
+    [Serializable]
     public class GBox: IBlockSheme
     {
-       
-        private Shape GElement;
+        [XmlIgnore]
+        public Shape GElement;
+
         public Box Element;
 
         public GBox()

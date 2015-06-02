@@ -30,17 +30,19 @@ namespace BlockMaster
             return 0;
         }
 
-        public Condition TakeConditionFromStore()
+        public Condition TakeConditionFromStore(Condition CurrentCondition)
         {
+            if (StateStoreStack.Count == 0) return CurrentCondition;
             Condition TakenCondition = StateStoreStack.Pop();
-            DopStateStoreStack.Push(TakenCondition);
+            DopStateStoreStack.Push(CurrentCondition);
             return TakenCondition;
         }
 
-        public Condition TakeConditionFromDopStore()
+        public Condition TakeConditionFromDopStore(Condition CurrentCondition)
         {
+            if (DopStateStoreStack.Count == 0) return CurrentCondition;
             Condition TakenCondition = DopStateStoreStack.Pop();
-            StateStoreStack.Push(TakenCondition);
+            StateStoreStack.Push(CurrentCondition);
             return TakenCondition;
         }
     }
