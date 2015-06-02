@@ -57,6 +57,7 @@
             <Canvas.Background>
                 <ImageBrush ImageSource="Resources/0_6868d_cc934b15_orig.png" Stretch="UniformToFill"/>
             </Canvas.Background>
+            
         </Canvas>
         <Border BorderThickness="5
                 " HorizontalAlignment="Left" Margin="10,33,0,10" Width="109" BorderBrush="#FFF0F0F0">
@@ -87,7 +88,8 @@
                 <TextBox Name ="TitleBox" Height="26" Margin="83,75,10,0" TextWrapping="Wrap" VerticalAlignment="Top" TextChanged="TitleBox_TextChanged" LostFocus="TitleBox_LostFocus"/>
                 <Label Content="Комментарий:" HorizontalAlignment="Left" Height="31" Margin="10,106,0,0" VerticalAlignment="Top" Width="112" RenderTransformOrigin="0.301,0.355"/>
                 <TextBox Name ="CommentBox" HorizontalAlignment="Left" Height="69" Margin="12,137,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="161" TextChanged="CommentBox_TextChanged" LostFocus="CommentBox_LostFocus" />
-                
+                <CheckBox Name ="StartBox" Content="Начальное состояние" Margin="0,224,0,161" Checked="CheckBox_Checked_1" Unchecked="CheckBox_Unchecked_1"/>
+                <CheckBox Name ="EndBox" Content="Конечное состояние" Margin="0,250,0,135" Unchecked="CheckBox_Unchecked_2" Checked="CheckBox_Checked_2"/>
             </Grid>
         </Border>
 

@@ -584,6 +584,9 @@ namespace BlockMaster
 
             TitleBox.Text = CurrentCondition.TakeGBoxFromCondition(CurrentShape.Name.Substring(1)).Element.Title;
             CommentBox.Text = CurrentCondition.TakeGBoxFromCondition(CurrentShape.Name.Substring(1)).Element.Comment;
+
+            StartBox.IsChecked = CurrentCondition.TakeGBoxFromCondition(CurrentShape.Name.Substring(1)).Element.StartPosition;
+            EndBox.IsChecked = CurrentCondition.TakeGBoxFromCondition(CurrentShape.Name.Substring(1)).Element.EndPosition;
            
         }
 
@@ -1348,7 +1351,45 @@ namespace BlockMaster
                 TitleBox.Text = CurrentCondition.TakeGBoxFromCondition(CurrentShape.Name.Substring(1)).Element.Title;
                 CommentBox.Text = CurrentCondition.TakeGBoxFromCondition(CurrentShape.Name.Substring(1)).Element.Comment;
 
+                StartBox.IsChecked = CurrentCondition.TakeGBoxFromCondition(CurrentShape.Name.Substring(1)).Element.StartPosition;
+                EndBox.IsChecked = CurrentCondition.TakeGBoxFromCondition(CurrentShape.Name.Substring(1)).Element.EndPosition;
+
             }
+
+            else
+            {
+                action = true;
+                CurrentShape = (ArrowLine)S;
+                ArrowLine AL = (ArrowLine)S;
+                WidthBox.Text = "Линия";
+                SelectedBorder.Visibility = Visibility.Hidden;
+
+                TitleBox.Text = CurrentCondition.TakeGLineFromCondition(AL.Name.Substring(1)).Line.Title;
+                CommentBox.Text = CurrentCondition.TakeGLineFromCondition(AL.Name.Substring(1)).Line.Comment;
+                LineSelected = true;
+
+                CurrentShape.Stroke = Brushes.Blue;
+            }
+        }
+
+        private void CheckBox_Checked_1(object sender, RoutedEventArgs e)
+        {
+            CurrentCondition.TakeGBoxFromCondition(CurrentShape.Name.Substring(1)).SetStartPosition();
+        }
+
+        private void CheckBox_Unchecked_1(object sender, RoutedEventArgs e)
+        {
+            CurrentCondition.TakeGBoxFromCondition(CurrentShape.Name.Substring(1)).Element.StartPosition = false;
+        }
+
+        private void CheckBox_Unchecked_2(object sender, RoutedEventArgs e)
+        {
+            CurrentCondition.TakeGBoxFromCondition(CurrentShape.Name.Substring(1)).Element.EndPosition = false;
+        }
+
+        private void CheckBox_Checked_2(object sender, RoutedEventArgs e)
+        {
+            CurrentCondition.TakeGBoxFromCondition(CurrentShape.Name.Substring(1)).SetEndPosition();
         }
 
     }
