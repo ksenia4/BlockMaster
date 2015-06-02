@@ -287,6 +287,8 @@ namespace BlockMaster
                 Canvas.SetTop(lab, Canvas.GetTop(CurrentShape) + (Canvas.GetBottom(CurrentShape)-Canvas.GetTop(CurrentShape))/4.0);*/
                 Canvas.SetLeft(lab, center.X-s.Width/2);
                 Canvas.SetTop(lab, center.Y-s.Height/2);
+                
+                lab.MouseDown += new MouseButtonEventHandler(Label_Click);
                 MainCanvas.Children.Add(lab);
                 
                 //CurrentShape.AddHandler(Shape.MouseDownEvent, new RoutedEventHandler(this.OnShapeClick));
@@ -303,6 +305,7 @@ namespace BlockMaster
                 //++ksu
                 string id = Guid.NewGuid().ToString().Replace('-', '_');
                 CurrentShape.Name = "S" + id; // здесь нужно генерировать идентификатор
+                lab.Tag = CurrentShape.Name;
                 GBox NewShape = new GBox(CurrentShape, (string)lab.Content, " ", ShapeType);
 
                 if (ShapeType == 4) CurrentShape.RenderTransform = new RotateTransform(45);
@@ -525,6 +528,8 @@ namespace BlockMaster
                 line.Y1 = currentOptimal.Y;
                 line.Y2 = targetOptimal.Y;
 
+
+
                 MainCanvas.Children.Add(line); 
                 TargetShape = null;
                 ShapeType = 2;
@@ -546,7 +551,9 @@ namespace BlockMaster
                 Canvas.SetTop(lab, Canvas.GetTop(CurrentShape) + (Canvas.GetBottom(CurrentShape)-Canvas.GetTop(CurrentShape))/4.0);*/
                 Canvas.SetLeft(lab, centerl.X - s.Width / 2);
                 Canvas.SetTop(lab, centerl.Y - s.Height / 2);
-                lab.Foreground = Brushes.OrangeRed;
+                lab.Foreground = Brushes.DarkGreen;
+                lab.Tag = line.Name;
+                lab.MouseDown += new MouseButtonEventHandler(Label_Click);
                 MainCanvas.Children.Add(lab);
 
                 NewCondition.AddConnection(CurrentName.Substring(1), TargetName.Substring(1), gLine, line.Name.Substring(1));
@@ -746,6 +753,9 @@ namespace BlockMaster
             Canvas.SetTop(lab, Canvas.GetTop(CurrentShape) + (Canvas.GetBottom(CurrentShape)-Canvas.GetTop(CurrentShape))/4.0);*/
             Canvas.SetLeft(lab, center.X - s.Width / 2);
             Canvas.SetTop(lab, center.Y - s.Height / 2);
+
+            lab.Tag = CurrentShape.Name;
+            lab.MouseDown += new MouseButtonEventHandler(Label_Click);
             MainCanvas.Children.Add(lab);
 
         }
@@ -919,7 +929,9 @@ namespace BlockMaster
             Canvas.SetTop(lab, Canvas.GetTop(CurrentShape) + (Canvas.GetBottom(CurrentShape)-Canvas.GetTop(CurrentShape))/4.0);*/
             Canvas.SetLeft(lab, centerl.X - s.Width / 2);
             Canvas.SetTop(lab, centerl.Y - s.Height / 2);
-            lab.Foreground = Brushes.OrangeRed;
+            lab.Foreground = Brushes.DarkGreen;
+            lab.Tag = line.Name;
+            lab.MouseDown += new MouseButtonEventHandler(Label_Click);
             MainCanvas.Children.Add(lab);
 
         }
@@ -1197,7 +1209,17 @@ namespace BlockMaster
             this.Close();
         }
 
-        
+        private void Label_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Controls.Label L = (System.Windows.Controls.Label)e.Source;
+                Shape S = (Shape)MainCanvas.FindName(L.Tag.ToString());
+                CurrentShape = S;
+                S.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left)
+                {
+                    RoutedEvent = Mouse.MouseDownEvent,
+                    Source = S,
+                });
+        }
 
     }
 }
